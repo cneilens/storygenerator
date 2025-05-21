@@ -2,7 +2,7 @@ import glob
 from moviepy import AudioFileClip, CompositeAudioClip, ImageClip, concatenate_videoclips, CompositeVideoClip, vfx
 import os
 from PIL import Image, ImageFilter
-
+from transitions import *
 
 def resize_images(image_paths):
 
@@ -87,14 +87,26 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
     # Create a clip for each image
     clips = []
     for img in image_files:
-        clip = ImageClip(img).with_duration(display_time).with_effects([vfx.CrossFadeIn(1.5),vfx.CrossFadeOut(1.5)])
+        clip = ImageClip(img).with_duration(display_time-(2*crossfade_time))
         clips.append(clip)
+        
+    clips_with_transitions = []
+    for i in range(len(clips) - 1):
+        # Add crossfade transition
+        clip1 = clips[i]
+        clip2 = clips[i + 1]
+        transition_clip = ripple_transition(clip1, clip2, crossfade_time)
+        clips_with_transitions.append(clip1)
+        clips_with_transitions.append(transition_clip)
+        clips_with_transitions.append(clip2)
     
-    audioclip = AudioFileClip(f"{image_folder}/vodevil-15550.mp3")
+    # audioclip = AudioFileClip(f"{image_folder}/vodevil-15550.mp3")
+    audioclip = AudioFileClip(f"{image_folder}/dramatic-trailer-308976.mp3").with_end(sum([display_time for _ in range(len(clips))]))
     new_audioclip = CompositeAudioClip([audioclip])
     
     # Create the final video with crossfades
-    final_clip = concatenate_videoclips(clips, method="compose", padding=-crossfade_time)
+    # final_clip = concatenate_videoclips(clips, method="compose", padding=-crossfade_time)
+    final_clip = concatenate_videoclips(clips_with_transitions, method="compose", padding=-crossfade_time)
     final_clip.audio = new_audioclip
     # Write the result to a file
     final_clip.write_videofile(output_file, fps=24)
@@ -103,8 +115,8 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
 if __name__ == "__main__":
     # You can customize these parameters as needed
     create_slideshow(
-        image_folder="./clownstory",  # Current directory
-        output_file="./clownstory/slideshow.mp4",
+        image_folder="./",  # Current directory
+        output_file="./slideshow-2.mp4",
         image_pattern="test-*.jpg,test-*.png",
         display_time=4,  # Each image displays for 4 seconds
         crossfade_time=1  # 1 second crossfade
