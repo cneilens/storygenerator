@@ -22,14 +22,14 @@ def resize_images(image_paths):
     max_width = 0
 
     for path, orig_w, orig_h, img in resized_images:
+        new_width = int((max_height / orig_h) * orig_w)
+        max_width = max(max_width, new_width)
         if max_height == orig_h:
             resized_versions.append((path, img))
             continue
         print (f"Resizing {path} from {orig_w}x{orig_h} to max height {max_height}")
-        new_width = int((max_height / orig_h) * orig_w)
         resized = img.resize((new_width, max_height), Image.LANCZOS)
         resized_versions.append((path, resized))
-        max_width = max(max_width, new_width)
 
     # Step 2: Add blurred borders to portrait images if needed
     for path, resized in resized_versions:
@@ -49,7 +49,7 @@ def resize_images(image_paths):
         final_img.save(path)
 
 def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_pattern="test-*.jpg,test-*.png", 
-                    display_time=4, crossfade_time=1):
+                    music_file=None, display_time=4, crossfade_time=1):
     """
     Creates a slideshow video from images with crossfades between them.
     
@@ -57,6 +57,7 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
         image_folder: Folder containing the images
         output_file: Name of the output MP4 file
         image_pattern: Pattern to match image files (comma-separated patterns)
+        music_file: Optional music file to add to the video
         display_time: Time each image is displayed (in seconds)
         crossfade_time: Duration of crossfade between images (in seconds)
     """
@@ -87,7 +88,8 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
     # Create a clip for each image
     clips = []
     for img in image_files:
-        clip = ImageClip(img).with_duration(display_time-(2*crossfade_time))
+        # clip = ImageClip(img).with_duration(display_time).with_effects([vfx.CrossFadeIn(crossfade_time),vfx.CrossFadeOut(crossfade_time)])
+        clip = ImageClip(img).with_duration(display_time-crossfade_time)
         clips.append(clip)
         
     clips_with_transitions = []
@@ -100,24 +102,26 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
         clips_with_transitions.append(transition_clip)
         clips_with_transitions.append(clip2)
     
-    # audioclip = AudioFileClip(f"{image_folder}/vodevil-15550.mp3")
-    audioclip = AudioFileClip(f"{image_folder}/dramatic-trailer-308976.mp3").with_end(sum([display_time for _ in range(len(clips))]))
-    new_audioclip = CompositeAudioClip([audioclip])
     
     # Create the final video with crossfades
     # final_clip = concatenate_videoclips(clips, method="compose", padding=-crossfade_time)
     final_clip = concatenate_videoclips(clips_with_transitions, method="compose", padding=-crossfade_time)
-    final_clip.audio = new_audioclip
+    if music_file:
+        audioclip = AudioFileClip(music_file).with_end(sum([(display_time+crossfade_time) for _ in range(len(clips))]))
+        new_audioclip = CompositeAudioClip([audioclip])
+        final_clip.audio = new_audioclip
     # Write the result to a file
     final_clip.write_videofile(output_file, fps=24)
     print(f"Slideshow created successfully: {output_file}")
 
 if __name__ == "__main__":
     # You can customize these parameters as needed
+    # {image_folder}/vodevil-15550.mp3
     create_slideshow(
         image_folder="./",  # Current directory
-        output_file="./slideshow-2.mp4",
+        output_file="./letsrock.mp4",
         image_pattern="test-*.jpg,test-*.png",
-        display_time=4,  # Each image displays for 4 seconds
-        crossfade_time=1  # 1 second crossfade
+        music_file = "./cherry-stone-rock-205899.mp3",
+        display_time=5,  # Each image displays for 4 seconds
+        crossfade_time=1.5  # 1 second crossfade
     )
