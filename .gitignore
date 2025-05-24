@@ -172,3 +172,11 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+rockstar/
+comicbook/
+clownstory/
+music/
+*.png
+*.mp4
+.DS_Store
