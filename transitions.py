@@ -1,16 +1,6 @@
 import numpy as np
 from moviepy import VideoClip, CompositeVideoClip, vfx
 
-def fade(clip1, clip2, duration=1.0):
-    """Simple fade transition between two clips."""
-    return clip1.crossfadeout(duration).set_duration(clip1.duration) \
-           .crossfadein(clip2, duration)
-
-def dissolve(clip1, clip2, duration=1.0):
-    """Dissolve transition (another name for crossfade)."""
-    clip1 = clip1.set_duration(clip1.duration)
-    clip2 = clip2.set_start(clip1.duration - duration)
-    return CompositeVideoClip([clip1, clip2.crossfadein(duration)])
 
 def wipe_left(clip1, clip2, duration=1.0):
     """Wipe from right to left transition."""
@@ -25,7 +15,7 @@ def wipe_left(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def wipe_right(clip1, clip2, duration=1.0):
     """Wipe from left to right transition."""
@@ -40,7 +30,7 @@ def wipe_right(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def wipe_up(clip1, clip2, duration=1.0):
     """Wipe from bottom to top transition."""
@@ -55,7 +45,7 @@ def wipe_up(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def wipe_down(clip1, clip2, duration=1.0):
     """Wipe from top to bottom transition."""
@@ -70,7 +60,7 @@ def wipe_down(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def slide_left(clip1, clip2, duration=1.0):
     """Slide from right to left transition."""
@@ -86,7 +76,7 @@ def slide_left(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def slide_right(clip1, clip2, duration=1.0):
     """Slide from left to right transition."""
@@ -102,7 +92,7 @@ def slide_right(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def zoom_in(clip1, clip2, duration=1.0):
     """Zoom in transition."""
@@ -127,7 +117,7 @@ def zoom_in(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def zoom_out(clip1, clip2, duration=1.0):
     """Zoom out transition."""
@@ -152,7 +142,7 @@ def zoom_out(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def blur_transition(clip1, clip2, duration=1.0, blur_intensity=20):
     """Blur transition between two clips."""
@@ -174,7 +164,7 @@ def blur_transition(clip1, clip2, duration=1.0, blur_intensity=20):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def whip_pan(clip1, clip2, duration=0.5):
     """Fast whip pan transition with motion blur."""
@@ -196,7 +186,7 @@ def whip_pan(clip1, clip2, duration=0.5):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def rotate_transition(clip1, clip2, duration=1.0, angle=360):
     """Rotating transition between clips."""
@@ -236,7 +226,7 @@ def rotate_transition(clip1, clip2, duration=1.0, angle=360):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def door_wipe(clip1, clip2, duration=1.0, from_center=True):
     """Door wipe transition (opening from center or closing to center)."""
@@ -273,7 +263,7 @@ def door_wipe(clip1, clip2, duration=1.0, from_center=True):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def circle_wipe(clip1, clip2, duration=1.0, from_center=True):
     """Circle wipe transition (expanding or contracting circle)."""
@@ -313,7 +303,7 @@ def circle_wipe(clip1, clip2, duration=1.0, from_center=True):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def diamond_wipe(clip1, clip2, duration=1.0, from_center=True):
     """Diamond-shaped wipe transition."""
@@ -353,7 +343,7 @@ def diamond_wipe(clip1, clip2, duration=1.0, from_center=True):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def clock_wipe(clip1, clip2, duration=1.0, clockwise=True):
     """Clock wipe transition."""
@@ -393,7 +383,7 @@ def clock_wipe(clip1, clip2, duration=1.0, clockwise=True):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def split_screen(clip1, clip2, duration=1.0, direction="horizontal"):
     """Split screen transition (horizontal or vertical)."""
@@ -419,7 +409,7 @@ def split_screen(clip1, clip2, duration=1.0, direction="horizontal"):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def venetian_blinds(clip1, clip2, duration=1.0, blinds=10, direction="horizontal"):
     """Venetian blinds transition effect."""
@@ -457,7 +447,7 @@ def venetian_blinds(clip1, clip2, duration=1.0, blinds=10, direction="horizontal
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def checkerboard(clip1, clip2, duration=1.0, squares=8):
     """Checkerboard transition effect."""
@@ -517,7 +507,7 @@ def checkerboard(clip1, clip2, duration=1.0, squares=8):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def push(clip1, clip2, duration=1.0, direction="left"):
     """Push transition where one clip pushes the other off screen."""
@@ -566,7 +556,7 @@ def push(clip1, clip2, duration=1.0, direction="left"):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def luma_wipe(clip1, clip2, duration=1.0, luma_map=None):
     """Luma wipe transition using a grayscale image as a map."""
@@ -605,7 +595,7 @@ def luma_wipe(clip1, clip2, duration=1.0, luma_map=None):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def flip_transition(clip1, clip2, duration=1.0, axis="x"):
     """3D flip transition around x or y axis."""
@@ -685,7 +675,7 @@ def flip_transition(clip1, clip2, duration=1.0, axis="x"):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def pixel_dissolve(clip1, clip2, duration=1.0, seed=None):
     """Pixel dissolve transition (random pixels change from clip1 to clip2)."""
@@ -721,7 +711,7 @@ def pixel_dissolve(clip1, clip2, duration=1.0, seed=None):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def burn_transition(clip1, clip2, duration=1.0):
     """Burn-like transition effect."""
@@ -771,7 +761,7 @@ def burn_transition(clip1, clip2, duration=1.0):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def ripple_transition(clip1, clip2, duration=1.0, amplitude=10, frequency=5):
     """Water ripple transition effect."""
@@ -780,6 +770,13 @@ def ripple_transition(clip1, clip2, duration=1.0, amplitude=10, frequency=5):
             progress = t / duration
             frame1 = clip1.get_frame(clip1.duration - duration + t)
             frame2 = clip2.get_frame(t)
+            
+            # Ensure both frames have the same shape
+            if frame1.shape != frame2.shape:
+                # Resize frame2 to match frame1's dimensions
+                from moviepy.video.fx.resize import resize
+                frame2 = resize(VideoClip(lambda t: frame2), 
+                                newsize=(frame1.shape[1], frame1.shape[0])).get_frame(0)
             
             h, w = frame1.shape[:2]
             y, x = np.mgrid[:h, :w]
@@ -821,7 +818,7 @@ def ripple_transition(clip1, clip2, duration=1.0, amplitude=10, frequency=5):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def flash_transition(clip1, clip2, duration=1.0, flash_intensity=1.5, flash_duration=0.2):
     """Flash transition - a bright flash occurs between clips."""
@@ -875,7 +872,7 @@ def flash_transition(clip1, clip2, duration=1.0, flash_intensity=1.5, flash_dura
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 def glitch_transition(clip1, clip2, duration=1.0, intensity=0.1, n_glitches=10):
     """Glitch effect transition between clips."""
@@ -968,12 +965,10 @@ def glitch_transition(clip1, clip2, duration=1.0, intensity=0.1, n_glitches=10):
         else:
             return clip2.get_frame(t)
 
-    return VideoClip(make_frame, duration=clip2.duration + duration)
+    return VideoClip(make_frame, duration=duration)
 
 # Dictionary mapping transition names to functions
 transitions = {
-    "fade": fade,
-    "dissolve": dissolve,
     "wipe_left": wipe_left,
     "wipe_right": wipe_right,
     "wipe_up": wipe_up,
@@ -1014,10 +1009,10 @@ def apply_transition(clip1, clip2, transition_name="fade", duration=1.0, **kwarg
         **kwargs: Additional parameters for the specific transition
     
     Returns:
-        A clip with the transition applied
+        A clip to use as a transition between clip1 and clip2
     """
     if transition_name in transitions:
         return transitions[transition_name](clip1, clip2, duration, **kwargs)
     else:
-        print(f"Transition '{transition_name}' not found. Using fade.")
-        return fade(clip1, clip2, duration)
+        print(f"Transition '{transition_name}' not found. Using ripple_transition.")
+        return ripple_transition(clip1, clip2, duration)
