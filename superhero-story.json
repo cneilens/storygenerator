@@ -1,0 +1,25 @@
+{
+    "story": {
+        "baseprompt": "\nFor the given image, generate a photo realistic image based on the given prompt.\nThe person should be still recognizable and have the same build. \nAny clothing or uniforms should look a little scruffy, be a little tight and look uncormfortable.\nThe image should be photorealistic. \nThey should be in an action pose.\nThe images should always be in colour.\nIf more than one image is supplied, use the first image as the base image for how the persons face and build should look.\nThe second image should be used to progress the story.\n Captain Yesterdays uniform is a red jumpsuit, with a yellow cape and a large yellow Y on his chest. \n ",
+        "baseimage": "inbar.jpg",
+        "prompts": [
+            "Generate a new photo realistic image of the person in the photo.\nOnce the pride of Metrovale, Captain Yesterday was a beacon of strength, speed, and chiseled charm. He is younger looking version of the person in the photo, with a full head of mousey blonde hair. He should look athletic and muscely.\n  You should still be able to recognise the person from the photo, he is just younger and fitter but has the same facial features. Keep his glasses and his hair color is mousey blonde. He is standing in a heroic pose with his hands on his hips, looking off into the distance. \nThe background should be a city skyline.",
+            "Generate a new photo realistic image of the person in the photo.\nBut that was 1997. These days, he’s pushing fifty five, pushing XL, and pushing his luck every time he tries to zip up the faded spandex suit he refuses to retire.\n His once-majestic cape now drags behind him like a moth-eaten tablecloth, and the symbol on his chest — a once-proud “Y” for Yesterday — now looks more like a sagging slingshot.\n But don’t tell him that.",
+            "Generate a new photo realistic image of the person in the photo.\nHe still wakes up every morning, cracks his back (twice), downs a protein shake laced with antacids, and checks the police scanner like it’s still the Reagan administration.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n A shrill call crackles through his radio: “Local cat trapped in chimney!” Captain Yesterday springs into action.\n",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Twenty minutes and three inhalers later, he’s at the scene. \nHe tries to shimmy up the roof but slips on a pigeon and wedges himself halfway in the flue.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n He is stuck head first in the chimney with only his legs visible. Hes legs are waggling trying to escape, but hes just to big to wiggle free.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Firefighters arrive an hour later and rescue both the cat and the superhero, who’s coughing soot and meowing involuntarily from smoke inhalation.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Captain Yesterday spots a group of children crying around a backyard trampoline.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n  A quick, wheezy dash later, he learns that a pet hamster named Pickles is stuck in the neighbor’s tree.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Reasoning that 'any good rescue starts with a bounce,' he launches himself from the trampoline",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n He trampolines straight through the second-story window. He lands in the neighbor’s bathtub.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n The hamster is later retrieved by a six-year-old with a broom.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Captain Yesterday is now stuck in the bathtub and has to be rescued by the fire department again.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Back at home, he mishears a call on the radio for “a drowning man in the mall.”",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n He thinks it’s a call for help and rushes to the mall, only to find a mannequin in the waater of the fountain.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Regardless, he cannonballs in — splitting his trousers.",
+            "Generate a new photo realistic image of the person in the photo acting out this scene.\n Children are screaming and Captain Yesterday is stuck in the fountain and has to be rescued by the mall security."
+        ]
+    }
+}

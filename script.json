@@ -1,0 +1,140 @@
+{
+    "script": [
+        {
+            "panel": 1,
+            "narration": "It's the night before the Super Bowl.",
+            "dialogue": "",
+            "description": "A small, dimly lit sports bar, neon lights flickering. An overweight, aging man sits alone at the bar, eating a burger and nursing a beer. Football highlights play on a TV overhead."
+        },
+        {
+            "panel": 2,
+            "narration": "",
+            "dialogue": "Bartender: You here for the big game tomorrow?\nEngineer (sighing): Just me and my code, as always.",
+            "description": "The bartender leans over, chatting with the engineer, who looks tired and a bit sad."
+        },
+        {
+            "panel": 3,
+            "narration": "",
+            "dialogue": "*RING RING*\nEngineer (thinking): Please, not tonight...",
+            "description": "Close-up of the engineer\u2019s phone lighting up, displaying 'ON-CALL INCIDENT: URGENT'. His face falls."
+        },
+        {
+            "panel": 4,
+            "narration": "",
+            "dialogue": "Engineer (hurried): I\u2019ve got to go. Can you box this up?",
+            "description": "The engineer stands, scrambling to gather his things, leaving his meal and half-finished beer behind."
+        },
+        {
+            "panel": 5,
+            "narration": "He rushes home, heart pounding.",
+            "dialogue": "",
+            "description": "The engineer runs through cold, empty streets, clutching his laptop bag. The city glows in the distance."
+        },
+        {
+            "panel": 6,
+            "narration": "",
+            "dialogue": "Engineer (panting): What now?",
+            "description": "He bursts into his cluttered apartment, greeted by flashing red lights on his computer and an urgent email: 'FBI NEEDS ASSISTANCE - SUPER BOWL AT RISK!'"
+        },
+        {
+            "panel": 7,
+            "narration": "",
+            "dialogue": "FBI Agent (on video call): Your software is down! We can\u2019t coordinate security. The Super Bowl might be cancelled!",
+            "description": "On his monitor, a stern FBI agent pleads for help, surrounded by frantic officials."
+        },
+        {
+            "panel": 8,
+            "narration": "",
+            "dialogue": "Engineer (panicking): This can\u2019t be happening... I need backup!",
+            "description": "Sweat beads on his brow as he grabs his phone, dialing frantically."
+        },
+        {
+            "panel": 9,
+            "narration": "",
+            "dialogue": "Engineer (shouting): Team! We\u2019re going all hands! Super Bowl\u2019s on the line!",
+            "description": "A group chat explodes with notifications. His teammates \u2013 diverse, tired but determined \u2013 pop up on screens, logging in from their homes."
+        },
+        {
+            "panel": 10,
+            "narration": "The real heroes get to work.",
+            "dialogue": "",
+            "description": "A montage of the team furiously typing, screens filled with code and error logs, determination in their eyes."
+        },
+        {
+            "panel": 11,
+            "narration": "",
+            "dialogue": "Engineer (relieved, to FBI): Try it now.",
+            "description": "He sits back, exhausted, as the FBI agent gives a thumbs up on the screen."
+        },
+        {
+            "panel": 12,
+            "narration": "The Super Bowl is saved \u2013 all thanks to the unlikely heroes behind the code.",
+            "dialogue": "",
+            "description": "The engineer slumps back in his chair, smiling faintly as fireworks go off outside his window, the glow of the Super Bowl celebration lighting up the night."
+        }
+    ],
+    "storyboard": [
+        {
+            "panel": 1,
+            "description": "Wide shot of a sparsely populated sports bar at night. The engineer, overweight, balding, and looking lonely, sits at the bar with a burger and beer. Football plays on a screen above."
+        },
+        {
+            "panel": 2,
+            "description": "Medium shot. The bartender leans in, making small talk. The engineer responds with a tired smile, revealing his solitude."
+        },
+        {
+            "panel": 3,
+            "description": "Close-up on the engineer\u2019s phone ringing on the bar. His hand hesitates above it, his face a mix of dread and resignation."
+        },
+        {
+            "panel": 4,
+            "description": "Action shot. The engineer stands abruptly, grabbing his bag, leaving unfinished food and beer behind. The bartender looks on, a bit surprised."
+        },
+        {
+            "panel": 5,
+            "description": "Nighttime city street. The engineer hurries home, bundled against the cold, city lights glowing in the fog."
+        },
+        {
+            "panel": 6,
+            "description": "Interior, cluttered apartment. The engineer throws open the door, his computer screens flashing with red alerts."
+        },
+        {
+            "panel": 7,
+            "description": "Zoomed-in shot of his laptop screen. A video call with a worried FBI agent, agency office chaos in the background."
+        },
+        {
+            "panel": 8,
+            "description": "Close-up. Engineer wipes sweat from his brow, frantically dialing his phone, panic in his eyes."
+        },
+        {
+            "panel": 9,
+            "description": "Split screen showing his teammates logging in from various locations \u2013 bedrooms, kitchens, coffee shops \u2013 all looking serious and ready."
+        },
+        {
+            "panel": 10,
+            "description": "Montage. Team members typing, code scrolling, error messages resolving, intense concentration everywhere."
+        },
+        {
+            "panel": 11,
+            "description": "Back to the engineer's apartment. He leans forward, hopeful, as the FBI agent on screen gives a relieved thumbs up."
+        },
+        {
+            "panel": 12,
+            "description": "Wide shot. The engineer leans back, exhausted but smiling, as fireworks from the Super Bowl celebration glow outside his window."
+        }
+    ],
+    "image_prompts": [
+        "A dimly lit sports bar at night, neon signs, a fat, old, lonely man eating a burger at the bar, football playing on a TV.",
+        "Bartender chatting with a tired, overweight, balding man at the bar, warm ambient lighting.",
+        "Close-up of a smartphone on a bar counter, screen displaying an urgent call notification, man's hand above it, worried expression.",
+        "Man hurriedly packing up his things, leaving a half-eaten burger and half-full beer glass on the counter, bartender watching.",
+        "Overweight engineer running down a cold, empty city street at night, laptop bag over shoulder, city lights in the mist.",
+        "Cluttered apartment with computer screens showing red alerts, man entering in a rush, messy surroundings.",
+        "Laptop screen showing a video call with a worried FBI agent, busy agency office in the background.",
+        "Close-up of panicked man wiping sweat, frantically dialing his phone, stress and anxiety visible.",
+        "Split screen: various diverse team members logging in from home offices, bedrooms, kitchens, and coffee shops, all serious and focused.",
+        "Montage: team members typing, screens with code, error logs, and determined faces, sense of urgency.",
+        "Engineer leaning forward at his desk, hopeful expression, FBI agent on screen giving a thumbs up.",
+        "Wide shot of engineer sitting back in his chair, exhausted but smiling, window showing fireworks and city skyline celebrating the Super Bowl."
+    ]
+}

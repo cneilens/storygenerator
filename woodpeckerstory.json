@@ -1,8 +1,8 @@
 {
     "baseprompt":"Can you flesh this out into a script, also generate a story board and a set of prompts for generating images for the story board. Respond as a json response with the following keys: \n\n 1. script: The full script for the comic book, including dialogue and narration.\n 2. storyboard: A detailed description of each panel in the comic book, including character actions and settings.\n 3. image_prompts: A list of prompts for generating images for each panel in the comic book.\n\n The story is as follows:\n\n",
-    "prompt":"Its the night before the SuperBowl, an fat, old and lonely software engineer is sat in a bar eating dinner watching football clips. His phone rings, its an On Call Incident, he has to pay and rush out of the bar before finishing his dinner or sadly his beer. He runs home only to find the FBI are struggling to use the software he makes. If he doesn't solve the problem the Superbowl could be cancelled! He panics, raises the alarm and pulls in the real heroes to fix the problem.",
+    "prompt":"Its very early in the morning, a fat, old and lonely software engineer is fast asleep. He gets awakened by a loud banging on the side of the house, its as loud as a jack hammer. He races to windows, his nemesis is back! Its the evil woodpecker. The woodpeack knows he has woken the man, grins and flies away. The woodpecker is the blight of the mans life. The woodpecker knows when he is in meetings, in calls, asleep or just needing quiet time and comes back to disturb him.",
     "base_image_prompt":"Generate a photo realistic image given the following description. Use the first image for the person in the story, if there is no person in the first image, use the second image. Keep their main facial features so they remain recognizable as them. This is the description to use:\n\n",
     "baseImage":"inbar.jpg",
-    "music":"music/dramatic-trailer-308976.mp3"
-    
+    "music":"music/cherry-stone-rock-205899.mp3"
+
 }
