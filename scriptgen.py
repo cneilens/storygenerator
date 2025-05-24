@@ -57,10 +57,7 @@ def script_gen(story_file):
         try:
             result = client.images.edit(
                 model="gpt-image-1",
-                image=[
-                    open(baseImage, "rb"),
-                    open(prevImage, "rb")
-                ],
+                image=open(baseImage, "rb"),
                 prompt=base_image_prompt + prompt
             )
         except Exception as e:

@@ -14,7 +14,19 @@ class PromptEditor:
         self.base_image_prompt = ""
         self.baseimage_path = ""
         self.music_path = ""
-        
+        # Load prompts.json on startup if it exists
+        if Path("prompts.json").exists():
+            try:
+                with open("prompts.json", "r") as f:
+                    data = json.load(f)
+                self.baseprompt = data.get("baseprompt", "")
+                self.prompt = data.get("prompt", "")
+                self.base_image_prompt = data.get("base_image_prompt", "")
+                self.baseimage_path = data.get("baseImage", "")
+                self.music_path = data.get("music", "")
+            except Exception as e:
+                print(f"Error loading prompts.json on startup: {str(e)}")
+            
     def save_to_json(self):
         data = {
             "baseprompt": self.baseprompt,
