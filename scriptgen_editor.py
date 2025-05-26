@@ -28,6 +28,10 @@ class PromptEditor:
                 print(f"Error loading prompts.json on startup: {str(e)}")
             
     async def save_to_json(self):
+        # Return a future that completes when dialog is closed
+        loop = asyncio.get_running_loop()
+        closed = loop.create_future()
+        
         # Create a dialog for filename input
         with ui.dialog() as save_dialog, ui.card():
             ui.label('Save Prompts').classes('text-lg font-bold mb-4')
@@ -67,18 +71,17 @@ class PromptEditor:
                         save_dialog.close()
                     except Exception as e:
                         ui.notify(f"Error saving file: {str(e)}", type="negative")
+                    closed.set_result(True)
                 
                 ui.button('Save', on_click=do_save).props('color=primary')
         
-        # Return a future that completes when dialog is closed
-        dialog_result = asyncio.Future()
         
+
         
         save_dialog.open()
-        save_dialog.on('hide', lambda: dialog_result.set_result(None))
         
         # Wait for dialog to close
-        await dialog_result
+        await closed
         
     def load_from_json(self):
         file_path = self.load_file_input.value
@@ -120,8 +123,16 @@ class PromptEditor:
             editor.log_window.open()
             
             # Run script with real-time output capture
-            prompt_file = editor.load_file_input.value or "prompts.json"
-            async def run_subprocess():
+            async def run_subprocess(prompt_file, mp4_file):
+
+                # if Path(mp4_file).exists():
+                #     with ui.dialog() as video_dialog:
+                #         with ui.card().classes('w-full max-w-4xl'):
+                #             ui.label('Generated Video').classes('text-xl font-bold mb-4')
+                #             ui.video(str(mp4_file)).classes('w-full')
+                #             ui.button('Close', on_click=video_dialog.close).classes('mt-4')
+                #     video_dialog.open()
+            
                 process = await asyncio.create_subprocess_exec(
                     'python', 'scriptgen.py', prompt_file,
                     stdout=asyncio.subprocess.PIPE,
@@ -149,18 +160,30 @@ class PromptEditor:
                 await process.wait()
                 
                 if process.returncode == 0:
+                    ui.notify("Script completed successfully", type="positive")
+                    
+                    # Close the log window
                     editor.log_output.push('\n✓ Script completed successfully')
-                    latest_mp4 = prompt_file.replace('.json', '.mp4')
-                    editor.log_output.push(f'\n📹 Generated video: {latest_mp4.name}')
-                        
-                    # Add video player to the log window
-                    with editor.log_window:
-                        ui.video(str(latest_mp4)).classes('w-full mt-4')
-                
+                    editor.log_output.push(f'\n📹 Generated video: {mp4_file}')
+                    editor.log_window.close()
+                    
+                    # Open new dialog with video player
+                    if Path(mp4_file).exists():
+                        with ui.dialog() as video_dialog:
+                            with ui.card().classes('w-full max-w-4xl'):
+                                ui.label('Generated Video').classes('text-xl font-bold mb-4')
+                                ui.video(mp4_file).classes('w-full')
+                                ui.button('Close', on_click=video_dialog.close).classes('mt-4')
+                        video_dialog.open()
+                    else:
+                        ui.notify(f"Video file {mp4_file} not found", type="warning")
+                   
                 else:
                     editor.log_output.push(f'\n✗ Script failed with exit code {process.returncode}')
-            
-            await run_subprocess()
+
+            prompt_file = editor.load_file_input.value or "prompts.json"
+            mp4_file = prompt_file.replace('.json', '.mp4')
+            await run_subprocess(prompt_file, mp4_file)
             ui.notify("Script executed successfully", type="positive")
         except Exception as e:
             ui.notify(f"Error running script: {str(e)}", type="negative")

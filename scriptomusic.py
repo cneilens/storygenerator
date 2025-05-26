@@ -48,7 +48,6 @@ def download_genres(force:False):
         json.dump(data, f, indent=2)
     return data
 
-
 def parse_duration(duration_str):
     """
     Convert duration string 'hh:mm:ss' or 'mm:ss' to seconds.
@@ -61,7 +60,6 @@ def parse_duration(duration_str):
     else:
         return 0
     return h * 3600 + m * 60 + s
-
 
 def analyze_script(script, hints):
     """
@@ -132,10 +130,9 @@ def filter_tracks_by_length(tracks, min_len, max_len):
         # Sort tracks by distance from target duration and take top 10
         sorted_tracks = sorted(tracks, 
                              key=lambda t: abs(parse_duration(t.get('length', '00:00:00')) - target))
-        filtered_tracks = sorted_tracks[:10]
-    return filtered_tracks
+        filtered_tracks = sorted_tracks
+    return filtered_tracks[:10]
     
-
 def find_best_genre(genres, genre):
     """
     Use OpenAI to recommend search metadatabase for us.
@@ -238,9 +235,6 @@ def get_best_track_for_script(script, hints=None, min_length=None, max_length=No
         genre_index = data.get("genre")
         genre_name = genre_dict.get(genre_index)
         data["genre"] = genre_name
-    
-    # Filter metadata for Rock genre and save to rock.json
-    # print(f"Saved {len(rock_tracks)} Rock tracks to rock.json")
     
     mood, bpm, genre = analyze_script(script, hints)
     best_genre = find_best_genre(genres, genre)
