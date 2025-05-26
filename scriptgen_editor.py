@@ -27,19 +27,58 @@ class PromptEditor:
             except Exception as e:
                 print(f"Error loading prompts.json on startup: {str(e)}")
             
-    def save_to_json(self):
-        data = {
-            "baseprompt": self.baseprompt,
-            "prompt": self.prompt,
-            "base_image_prompt": self.base_image_prompt,
-            "baseImage": self.baseimage_path,
-            "music": self.music_path
-        }
+    async def save_to_json(self):
+        # Create a dialog for filename input
+        with ui.dialog() as save_dialog, ui.card():
+            ui.label('Save Prompts').classes('text-lg font-bold mb-4')
+            
+            filename_input = ui.input(
+                label='Filename',
+                placeholder='Enter filename (without .json extension)',
+                value='prompts'
+            ).classes('w-full')
+            
+            with ui.row():
+                ui.button('Cancel', on_click=save_dialog.close)
+                
+                async def do_save():
+                    filename = filename_input.value.strip()
+                    if not filename:
+                        ui.notify("Please enter a filename", type="warning")
+                        return
+                    # Add .json extension if not present
+                    if not filename.endswith('.json'):
+                        filename += '.json'
+                    
+                    editor.load_file_input.set_value(filename)
+                    data = {
+                        "baseprompt": self.baseprompt,
+                        "prompt": self.prompt,
+                        "base_image_prompt": self.base_image_prompt,
+                        "baseImage": self.baseimage_path,
+                        "music": self.music_path
+                    }
+                    
+                    try:
+                        with open(filename, "w") as f:
+                            json.dump(data, f, indent=2)
+                        
+                        ui.notify(f"Data saved to {filename}", type="positive")
+                        save_dialog.close()
+                    except Exception as e:
+                        ui.notify(f"Error saving file: {str(e)}", type="negative")
+                
+                ui.button('Save', on_click=do_save).props('color=primary')
         
-        with open("prompts.json", "w") as f:
-            json.dump(data, f, indent=2)
+        # Return a future that completes when dialog is closed
+        dialog_result = asyncio.Future()
         
-        ui.notify("Data saved to prompts.json", type="positive")
+        
+        save_dialog.open()
+        save_dialog.on('hide', lambda: dialog_result.set_result(None))
+        
+        # Wait for dialog to close
+        await dialog_result
         
     def load_from_json(self):
         file_path = self.load_file_input.value
@@ -65,7 +104,8 @@ class PromptEditor:
             ui.notify(f"Error loading file: {str(e)}", type="negative")
             
     async def run_script(self):
-        self.save_to_json()
+        await self.save_to_json()
+        
         try:
             # Create log window if it doesn't exist
             if not hasattr(editor, 'log_window'):
@@ -80,9 +120,10 @@ class PromptEditor:
             editor.log_window.open()
             
             # Run script with real-time output capture
+            prompt_file = editor.load_file_input.value or "prompts.json"
             async def run_subprocess():
                 process = await asyncio.create_subprocess_exec(
-                    'python', 'scriptgen.py', 'prompts.json',
+                    'python', 'scriptgen.py', prompt_file,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE
                 )
@@ -109,6 +150,13 @@ class PromptEditor:
                 
                 if process.returncode == 0:
                     editor.log_output.push('\n✓ Script completed successfully')
+                    latest_mp4 = prompt_file.replace('.json', '.mp4')
+                    editor.log_output.push(f'\n📹 Generated video: {latest_mp4.name}')
+                        
+                    # Add video player to the log window
+                    with editor.log_window:
+                        ui.video(str(latest_mp4)).classes('w-full mt-4')
+                
                 else:
                     editor.log_output.push(f'\n✗ Script failed with exit code {process.returncode}')
             
@@ -120,7 +168,7 @@ class PromptEditor:
 editor = PromptEditor()
 
 with ui.card().classes("w-full max-w-4xl mx-auto p-6"):
-    ui.label("OpenAI Prompt Editor").classes("text-2xl font-bold mb-4")
+    ui.label("Slideshow Prompt Editor").classes("text-2xl font-bold mb-4")
     # Initialize log window and process tracking
     editor.process = None
     editor.log_content = []

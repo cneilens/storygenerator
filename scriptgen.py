@@ -81,7 +81,7 @@ def script_gen(story_file):
     mp4_file, ext = os.path.splitext(story_file)
     mp4_file = mp4_file + ".mp4"
 
-    best_music = get_best_track_for_script(response.get("script"), hints=None, min_length=90, max_length=140, refreshCache=False)
+    best_music = get_best_track_for_script(response.get("script"), min_length=70, max_length=100, refreshCache=False)
     if best_music:
         music = best_music
         

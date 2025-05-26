@@ -95,50 +95,93 @@ Respond in JSON with keys 'mood', 'bpm', 'genre'."""
         return None, None, None
 
 
+def filter_tracks_by_length(tracks, min_len, max_len):
+    """
+    Filter tracks by duration to find the best fit within min_len and max_len.
+    """
+    if not tracks:
+        return tracks
     
-def find_track(metadata, mood, bpm, genre, min_len, max_len, hints=None):
+    filtered_tracks = []
+    for track in tracks:
+        duration_str = track.get('length', '00:00:00')
+        duration_seconds = parse_duration(duration_str)
+        
+        # If both min and max are specified
+        if min_len and max_len:
+            if min_len <= duration_seconds <= max_len:
+                filtered_tracks.append(track)
+        # If only min is specified
+        elif min_len:
+            if duration_seconds >= min_len:
+                filtered_tracks.append(track)
+        # If only max is specified
+        elif max_len:
+            if duration_seconds <= max_len:
+                filtered_tracks.append(track)
+    
+    # If no tracks fit the criteria, find the closest one
+    if not filtered_tracks and tracks:
+        if min_len and max_len:
+            target = (min_len + max_len) / 2
+        elif min_len:
+            target = min_len
+        else:
+            target = max_len
+        
+        # Sort tracks by distance from target duration and take top 10
+        sorted_tracks = sorted(tracks, 
+                             key=lambda t: abs(parse_duration(t.get('length', '00:00:00')) - target))
+        filtered_tracks = sorted_tracks[:10]
+    return filtered_tracks
+    
+
+def find_best_genre(genres, genre):
     """
     Use OpenAI to recommend search metadatabase for us.
     """
-# Convert seconds to HH:MM:SS format
-    def seconds_to_timestamp(seconds):
-        if not seconds or seconds <= 0:
-            return "00:00:00"
-        hours = seconds // 3600
-        minutes = (seconds % 3600) // 60
-        secs = seconds % 60
-        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
-    
-    min_len_timestamp = seconds_to_timestamp(min_len) if min_len else 0
-    max_len_timestamp = seconds_to_timestamp(max_len) if max_len else 0
         
     prompt = f"""You are a music recommendation engine specialized in Incompetech music.
-Given the following metadata database json file, search all the tracks in the database and recommend upto 5 tracks that best match the mood, bpm, genre and any additional hints.
-Use the feel, description, instruments and genre fields of the metadata to determine the best matches.
+Given the following json metadata, find the best macthing genre. 
+Return the matching genre name as a string.
+metadata:
+{json.dumps(genres, indent=2)}   
+genre: {genre}
+"""
+    print("Finding a best genre...")
+    response = client.responses.create(
+        model="gpt-4.1",
+        input=prompt,
+        temperature=0.7,
+    )
+    return response.output_text.strip().replace("'", "").replace('"', "")
+
+    
+def find_track(metadata, mood, bpm, min_len, max_len, hints=None):
+    
+    filtered_metadata = filter_tracks_by_length(metadata, min_len, max_len) if min_len or max_len else metadata
+    
+    """
+    Use OpenAI to recommend search metadatabase for us.
+    """
+        
+    prompt = f"""You are a music recommendation engine specialized in Incompetech music.
+Given the following metadata database json file, search all the tracks in the database and recommend upto 5 tracks that best match the mood, bpm and any additional hints.
+Use the feel, description, and instruments fields of the metadata to determine the best matches.
 Bias on genre over bpm. 
-Also bias using the instruments that better match the genre.
-If the passed min_len and max_len are greater than 0, filter the tracks by the length of the track, min_len and max_len are times in seconds. Use the length field in the metadata for filtering by tracklength. 
-Only use the lengths as a rough guide, not an exact match. 
-But do not return tracks that are less than the min_len if other tracks are available.
-Bias genre and mood over length.
+You must keep all tracks less than 3 minutes in length while maintaing the best match.
 
 metadata:
-{json.dumps(metadata, indent=2)}   
+{json.dumps(filtered_metadata, indent=None)}   
 
 mood:
 {mood}
 bpm:
 {bpm}
-genre:
-{genre}
-min_len:
-{min_len_timestamp}
-max_len:
-{max_len_timestamp}
 Hints:
 {hints or ''}
 
-Purely respond as JSON with an array named 'tracks' which is  the metadata to the best matching tracks  and an object named 'reasoning' that describes your reasoning for selection.
+Purely respond as JSON with an array named 'tracks' which is the metadata to the best matching tracks and an object named 'reasoning' that describes your reasoning for selection.
 Ensure its valid json without any extra text or formatting.
 """
     print("Finding a track for the script...")
@@ -155,6 +198,8 @@ Ensure its valid json without any extra text or formatting.
     
     try:
         rec = json.loads(jsonresponse)
+        print(rec.get('reasoning'))
+        # print(json.dumps(rec, indent=2))
         return rec
     except Exception as e:
         print(f"Warning: could not parse OpenAI response as JSON. {e}")
@@ -189,16 +234,20 @@ def get_best_track_for_script(script, hints=None, min_length=None, max_length=No
     genre_dict = {}
     for genre_item in genres:
         genre_dict[f"{genre_item['id']}"] = genre_item['genre']
-    genres = genre_dict
     for data in metadata:
         genre_index = data.get("genre")
-        genre_name = genres.get(genre_index)
+        genre_name = genre_dict.get(genre_index)
         data["genre"] = genre_name
     
+    # Filter metadata for Rock genre and save to rock.json
+    # print(f"Saved {len(rock_tracks)} Rock tracks to rock.json")
+    
     mood, bpm, genre = analyze_script(script, hints)
+    best_genre = find_best_genre(genres, genre)
+    best_genre_tracks = [track for track in metadata if track.get('genre') == best_genre]
     
     print(f"Recommended mood: {mood}, bpm: {bpm}, genre: {genre}")
-    best_tracks = find_track(metadata, mood, bpm, genre, min_length, max_length, hints)
+    best_tracks = find_track(best_genre_tracks, mood, bpm   , min_length, max_length, hints)
     if best_tracks:
         tracks = best_tracks.get('tracks', [])
         if tracks:
@@ -237,7 +286,7 @@ def main():
     
     script = jsonresponse.get("script")
     hints = ""
-    min_length = 40
+    min_length = 70
     max_length = 100
     refresh_cache = False
 
