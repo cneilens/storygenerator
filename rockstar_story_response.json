@@ -1,0 +1,389 @@
+{
+    "script": "TITLE: IT'S A LONG WAY TO THE TOP\n\nFADE IN:\n\nEXT. SUBURBAN BACKYARD \u2013 DAY \u2013 1965\n\nA cluttered, sunlit yard. COLIN (age 3, chubby, tousled blonde hair, blue eyes, always a bit disheveled) sits in the grass, banging pot lids with wooden spoons, grinning at the noise. \n\nMONTAGE \u2013 COLIN GROWING UP\n\n- INT. FAMILY LIVING ROOM \u2013 NIGHT \u2013 1969\nColin (age 7, slightly taller but still chubby, hair a bit longer, blue eyes) strums a toy guitar, mimicking Angus Young's duck walk. His mother, MRS. TURNER (40s, kind, brown hair), smiles.\n\n- INT. SCHOOL AUDITORIUM \u2013 DAY \u2013 1974\nColin (age 12) on stage, playing bass in a school talent show. His hair is shaggier, his shirt untucked. His friends cheer him from the audience.\n\n- INT. GARAGE \u2013 NIGHT \u2013 1978\nColin (age 16) with his first real band, THE WILD BUNCH. Colin sings into a mic, sweat on his brow, messy hair, wearing a faded Led Zeppelin tee. His bandmates are just as unruly. The music is loud and rough.\n\n- INT. SMALL CLUB \u2013 NIGHT \u2013 1985\nColin (age 23) on stage, now the frontman of IRON SHADOWS. The crowd is sparse, but Colin gives it his all, headbanging, hair sticking to his forehead. \n\n- INT. APARTMENT \u2013 NIGHT \u2013 1993\nColin (age 31) sits alone, surrounded by old band flyers and demo tapes. He picks up a guitar, strums softly, and sighs, looking at a Nirvana poster on the wall. \n\n- INT. REHEARSAL SPACE \u2013 DAY \u2013 1995\nColin (age 33) rallies a new group of musicians, encouraging them through laughter and missed notes. He\u2019s still chubby, hair now shoulder-length, a bit more tired but energetic.\n\n- EXT. MUSIC FESTIVAL STAGE \u2013 NIGHT \u2013 2003\nColin (age 41) finally on a big stage with his band, THE TURNERS. Bright lights. Huge crowd. Colin, older, heavier, and happier than ever, rips into a guitar solo. \n\nCUT TO:\n\nINT. BACKSTAGE \u2013 NIGHT\nColin, sweaty and exhausted, looks into a mirror. He straightens his messy hair and smiles at his reflection.\n\nCOLIN (V.O.):\nIt really is a long way to the top...\n\nCUT TO:\n\nEXT. MAIN STAGE \u2013 NIGHT\nColin stands under a dazzling sign made of lights: \"It's a long way to the top if you want to rock n roll.\" He grins, raises his guitar, and launches into a final triumphant riff as the crowd roars.\n\nFADE OUT.\n\nEND TITLE CARD: IT'S A LONG WAY TO THE TOP IF YOU WANT TO ROCK N ROLL.",
+    "storyboard": [
+        {
+            "cell": 1,
+            "description": "EXT. SUBURBAN BACKYARD \u2013 DAY \u2013 1965: Colin, age 3, chubby, tousled blonde hair, blue eyes, sits in the grass banging pots with wooden spoons. Toys scattered around.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 3,
+                    "hairstyle": "tousled",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin giggles as he bangs the pots."
+        },
+        {
+            "cell": 2,
+            "description": "INT. FAMILY LIVING ROOM \u2013 NIGHT \u2013 1969: Colin, age 7, strums a toy guitar, imitating Angus Young. His mother watches from the couch, amused.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 7,
+                    "hairstyle": "slightly longer, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                },
+                {
+                    "name": "Mrs. Turner",
+                    "age": 40,
+                    "hairstyle": "shoulder-length",
+                    "hair_color": "brown",
+                    "build": "average"
+                }
+            ],
+            "dialogue": "Colin: (singing) 'I'm on the highway to hell!'"
+        },
+        {
+            "cell": 3,
+            "description": "INT. COLIN'S BEDROOM \u2013 DAY \u2013 1971: Colin, age 9, sticks rock band posters on the walls. He hums 'Stairway to Heaven.'",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 9,
+                    "hairstyle": "longer, still messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (softly) 'To be a rock and not to roll...'"
+        },
+        {
+            "cell": 4,
+            "description": "INT. SCHOOL AUDITORIUM \u2013 DAY \u2013 1974: Colin, age 12, plays bass at a school talent show. Audience of kids laugh and clap.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 12,
+                    "hairstyle": "shaggy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Announcer: 'Give it up for Colin and the Wildcats!'"
+        },
+        {
+            "cell": 5,
+            "description": "BACKSTAGE \u2013 SCHOOL AUDITORIUM \u2013 1974: Colin, age 12, high-fives friends, grinning with pride.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 12,
+                    "hairstyle": "shaggy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Friend: 'You rocked, Colin!'"
+        },
+        {
+            "cell": 6,
+            "description": "INT. GARAGE \u2013 NIGHT \u2013 1978: Colin, age 16, with his first real band, THE WILD BUNCH. He sings into a mic, sweat on his brow.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 16,
+                    "hairstyle": "messy, shoulder-length",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (yelling) 'Rock and roll forever!'"
+        },
+        {
+            "cell": 7,
+            "description": "INT. GARAGE \u2013 NIGHT \u2013 1978: Colin, age 16, stands with his bandmates, laughing after rehearsal. Empty pizza boxes abound.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 16,
+                    "hairstyle": "messy, shoulder-length",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Bandmate: 'Someday, we'll play stadiums!'"
+        },
+        {
+            "cell": 8,
+            "description": "INT. COLIN'S BEDROOM \u2013 NIGHT \u2013 1981: Colin, age 19, writes lyrics in a notebook, Metallica poster above his bed.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 19,
+                    "hairstyle": "shoulder-length, unkempt",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (muttering) 'Nothing else matters...'"
+        },
+        {
+            "cell": 9,
+            "description": "INT. SMALL CLUB \u2013 NIGHT \u2013 1985: Colin, age 23, performing with IRON SHADOWS. Sparse crowd, neon lights.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 23,
+                    "hairstyle": "long, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (singing) 'Fear of the dark!'"
+        },
+        {
+            "cell": 10,
+            "description": "INT. CLUB BATHROOM \u2013 NIGHT \u2013 1985: Colin, age 23, splashes water on his face, looks in the mirror, determined.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 23,
+                    "hairstyle": "long, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (quietly) 'Keep going.'"
+        },
+        {
+            "cell": 11,
+            "description": "INT. RECORDING STUDIO \u2013 DAY \u2013 1988: Colin, age 26, singing into a microphone, headphones on, focused.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 26,
+                    "hairstyle": "long, tied back",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Producer: 'That\u2019s the take, Colin!'"
+        },
+        {
+            "cell": 12,
+            "description": "INT. RECORDING STUDIO \u2013 LOUNGE \u2013 DAY \u2013 1988: Colin, age 26, laughs with bandmates, eating chips.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 26,
+                    "hairstyle": "long, tied back",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: 'Pass the dip!'"
+        },
+        {
+            "cell": 13,
+            "description": "INT. APARTMENT \u2013 NIGHT \u2013 1993: Colin, age 31, sits alone, surrounded by old band flyers and demo tapes, looking at a Nirvana poster.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 31,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (sighs) 'Why is it so hard?'"
+        },
+        {
+            "cell": 14,
+            "description": "INT. APARTMENT \u2013 NIGHT \u2013 1993: Colin, age 31, picks up his guitar and slowly begins to play.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 31,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (softly) 'Come as you are...'"
+        },
+        {
+            "cell": 15,
+            "description": "EXT. STREET \u2013 DAY \u2013 1994: Colin, age 32, busking on the street, people passing by, some stop to listen.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 32,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (singing) 'Lithium!'"
+        },
+        {
+            "cell": 16,
+            "description": "INT. REHEARSAL SPACE \u2013 DAY \u2013 1995: Colin, age 33, encouraging new bandmates through laughter and missed notes.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 33,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: 'Let\u2019s just have fun with it!'"
+        },
+        {
+            "cell": 17,
+            "description": "INT. REHEARSAL SPACE \u2013 DAY \u2013 1995: Colin, age 33, hands out lyric sheets and tunes his guitar.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 33,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: 'Alright, from the top!'"
+        },
+        {
+            "cell": 18,
+            "description": "INT. BAR \u2013 NIGHT \u2013 1997: Colin, age 35, plays with his band on a small stage, crowd claps modestly.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 35,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (smiling) 'Thanks, everyone!'"
+        },
+        {
+            "cell": 19,
+            "description": "INT. BAR \u2013 NIGHT \u2013 1997: Colin, age 35, sits at the bar, drinking soda, looking thoughtful.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 35,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (to bartender) 'One day, it'll happen.'"
+        },
+        {
+            "cell": 20,
+            "description": "INT. MUSIC STUDIO \u2013 DAY \u2013 2000: Colin, age 38, records with new band, more professional setup.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 38,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Producer: 'Sounds great, Colin!'"
+        },
+        {
+            "cell": 21,
+            "description": "INT. PRACTICE ROOM \u2013 EVENING \u2013 2002: Colin, age 40, rehearses with THE TURNERS, excitement in the air.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 40,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: 'This is it, guys!'"
+        },
+        {
+            "cell": 22,
+            "description": "EXT. MUSIC FESTIVAL STAGE \u2013 NIGHT \u2013 2003: Colin, age 41, on stage with THE TURNERS, huge crowd, bright lights.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 41,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin: (yelling) 'Let\u2019s rock!'"
+        },
+        {
+            "cell": 23,
+            "description": "INT. BACKSTAGE \u2013 NIGHT \u2013 2003: Colin, age 41, sweaty after the gig, straightens his hair in the mirror, grinning.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 41,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": "Colin (V.O.): 'It really is a long way to the top...'"
+        },
+        {
+            "cell": 24,
+            "description": "EXT. MAIN STAGE \u2013 NIGHT: Colin, age 41, stands under a dazzling sign made of lights: 'It's a long way to the top if you want to rock n roll.' He raises his guitar.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 41,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": ""
+        },
+        {
+            "cell": 25,
+            "description": "EXT. MAIN STAGE \u2013 NIGHT: Colin, age 41, performs a triumphant riff as the crowd roars beneath the glowing sign.",
+            "characters": [
+                {
+                    "name": "Colin",
+                    "age": 41,
+                    "hairstyle": "shoulder-length, messy",
+                    "hair_color": "blonde",
+                    "build": "chubby"
+                }
+            ],
+            "dialogue": ""
+        }
+    ],
+    "image_prompts": [
+        "A chubby 3-year-old boy with tousled blonde hair and blue eyes sits in a sunny backyard, banging pots with wooden spoons. Main character: Colin, age 3, tousled blonde hair, chubby build.",
+        "A chubby 7-year-old boy with slightly longer messy blonde hair, strums a toy guitar in a cozy living room. His mother, a woman in her 40s with shoulder-length brown hair, sits smiling on the couch. Main character: Colin, age 7, messy blonde hair, chubby build.",
+        "A chubby 9-year-old boy with longer messy blonde hair sticks rock band posters on his bedroom wall, humming. Main character: Colin, age 9, messy blonde hair, chubby build.",
+        "A chubby 12-year-old boy with shaggy blonde hair performs on bass guitar at a school talent show, with kids in the audience. Main character: Colin, age 12, shaggy blonde hair, chubby build.",
+        "A chubby 12-year-old boy with shaggy blonde hair high-fives friends backstage, grinning. Main character: Colin, age 12, shaggy blonde hair, chubby build.",
+        "A chubby 16-year-old boy with messy shoulder-length blonde hair sings into a microphone in a cluttered garage with his band. Main character: Colin, age 16, messy shoulder-length blonde hair, chubby build.",
+        "A chubby 16-year-old boy with messy shoulder-length blonde hair laughs with bandmates in a cluttered garage, pizza boxes everywhere. Main character: Colin, age 16, messy shoulder-length blonde hair, chubby build.",
+        "A chubby 19-year-old boy with shoulder-length unkempt blonde hair writes lyrics in a notebook under a Metallica poster. Main character: Colin, age 19, unkempt shoulder-length blonde hair, chubby build.",
+        "A chubby 23-year-old man with long messy blonde hair performs on stage with his band in a small club, neon lights shining. Main character: Colin, age 23, long messy blonde hair, chubby build.",
+        "A chubby 23-year-old man with long messy blonde hair splashes water on his face in a club bathroom, looking determined in the mirror. Main character: Colin, age 23, long messy blonde hair, chubby build.",
+        "A chubby 26-year-old man with long blonde hair tied back sings into a microphone in a recording studio, headphones on. Main character: Colin, age 26, long tied-back blonde hair, chubby build.",
+        "A chubby 26-year-old man with long blonde hair tied back laughs with bandmates in a studio lounge, eating chips. Main character: Colin, age 26, long tied-back blonde hair, chubby build.",
+        "A chubby 31-year-old man with shoulder-length messy blonde hair sits alone in his apartment surrounded by band flyers and tapes, looking at a Nirvana poster. Main character: Colin, age 31, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 31-year-old man with shoulder-length messy blonde hair picks up his guitar and begins to play softly in his apartment. Main character: Colin, age 31, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 32-year-old man with shoulder-length messy blonde hair busks on a city street, people passing by. Main character: Colin, age 32, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 33-year-old man with shoulder-length messy blonde hair laughs and encourages new bandmates in a rehearsal space. Main character: Colin, age 33, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 33-year-old man with shoulder-length messy blonde hair hands out lyric sheets and tunes his guitar in a rehearsal space. Main character: Colin, age 33, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 35-year-old man with shoulder-length messy blonde hair plays on a small bar stage, crowd clapping. Main character: Colin, age 35, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 35-year-old man with shoulder-length messy blonde hair sits at a bar, holding a drink, thoughtful. Main character: Colin, age 35, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 38-year-old man with shoulder-length messy blonde hair records vocals in a professional music studio. Main character: Colin, age 38, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 40-year-old man with shoulder-length messy blonde hair rehearses enthusiastically with his band in a practice room. Main character: Colin, age 40, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 41-year-old man with shoulder-length messy blonde hair performs with his band on a large festival stage, bright lights and huge crowd. Main character: Colin, age 41, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 41-year-old man with shoulder-length messy blonde hair straightens his hair in a backstage mirror, grinning. Main character: Colin, age 41, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 41-year-old man with shoulder-length messy blonde hair stands beneath a dazzling stage sign that reads 'It's a long way to the top if you want to rock n roll,' guitar raised. Main character: Colin, age 41, shoulder-length messy blonde hair, chubby build.",
+        "A chubby 41-year-old man with shoulder-length messy blonde hair performs a triumphant guitar riff on stage, crowd roaring, stage lights shining. Main character: Colin, age 41, shoulder-length messy blonde hair, chubby build."
+    ]
+}

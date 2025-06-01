@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import json
+import os
 import subprocess
 from pathlib import Path
 from nicegui import ui
 import asyncio
 import shutil
-import tempfile
+from local_file_picker import local_file_picker
 
 class PromptEditor:
     def __init__(self):
@@ -14,6 +15,8 @@ class PromptEditor:
         self.base_image_prompt = ""
         self.baseimage_path = ""
         self.music_path = ""
+        self.rootFolder = Path.cwd()  # Set the root folder to current working directory
+        self.feedback_enabled = False
         # Load prompts.json on startup if it exists
         if Path("prompts.json").exists():
             try:
@@ -33,13 +36,13 @@ class PromptEditor:
         closed = loop.create_future()
         
         # Create a dialog for filename input
-        with ui.dialog() as save_dialog, ui.card():
+        with ui.dialog().classes('w-full') as save_dialog, ui.card().classes('w-full'):
             ui.label('Save Prompts').classes('text-lg font-bold mb-4')
             
             filename_input = ui.input(
-                label='Filename',
-                placeholder='Enter filename (without .json extension)',
-                value='prompts'
+                label = 'Filename',
+                placeholder = 'Enter filename (without .json extension)',
+                value = self.load_file_input.value if self.load_file_input.value else 'prompts'
             ).classes('w-full')
             
             with ui.row():
@@ -54,6 +57,7 @@ class PromptEditor:
                     if not filename.endswith('.json'):
                         filename += '.json'
                     
+                    filename = os.path.join(self.rootFolder, filename)
                     editor.load_file_input.set_value(filename)
                     data = {
                         "baseprompt": self.baseprompt,
@@ -75,9 +79,6 @@ class PromptEditor:
                 
                 ui.button('Save', on_click=do_save).props('color=primary')
         
-        
-
-        
         save_dialog.open()
         
         # Wait for dialog to close
@@ -98,6 +99,7 @@ class PromptEditor:
             self.base_image_prompt_textarea.value = data.get("base_image_prompt", "")
             self.baseimage_path = data.get("baseImage", "")
             self.music_path = data.get("music", "")
+            self.rootFolder = Path(file_path).parent
             
             self.baseimage_label.text = f"Selected: {Path(self.baseimage_path).name}" if self.baseimage_path else "No image selected"
             self.music_label.text = f"Selected: {Path(self.music_path).name}" if self.music_path else "No music selected"
@@ -105,36 +107,81 @@ class PromptEditor:
             ui.notify(f"Loaded from {file_path}", type="positive")
         except Exception as e:
             ui.notify(f"Error loading file: {str(e)}", type="negative")
-            
-    async def run_script(self):
+       
+    async def run_script(self, 
+                         use_last_output,
+                         run_image_gen, 
+                         minlength,
+                         maxlength,
+                         transition,
+                         feedback_last_image,
+                         music_hints):
+
         await self.save_to_json()
         
         try:
-            # Create log window if it doesn't exist
-            if not hasattr(editor, 'log_window'):
-                with ui.dialog() as editor.log_window:
-                    with ui.card().classes('w-full max-w-4xl'):
+            # Create dialog with log and image side-by-side
+            if not hasattr(editor, 'log_dialog'):
+                with ui.dialog().classes('w-full max-w-6xl') as editor.log_dialog:
+                    with ui.card().classes('w-full max-w-6xl'):
                         ui.label('Script Output').classes('text-xl font-bold mb-4')
-                        editor.log_output = ui.log(max_lines=1000).classes('w-full h-96')
-                        ui.button('Close', on_click=editor.log_window.close)
+                        with ui.row().classes('w-full gap-4'):
+                            # Log window on the left
+                            with ui.column().classes('flex-1'):
+                                ui.label('Log Output').classes('text-lg font-semibold mb-2')
+                                editor.log_output = ui.log(max_lines=1000).classes('w-full h-96')
+                            
+                            # Image view on the right
+                            with ui.column().classes('flex-1'):
+                                ui.label('Base Image').classes('text-lg font-semibold mb-2')
+                                if editor.baseimage_path and Path(editor.baseimage_path).exists():
+                                    editor.base_image_view = ui.image(editor.baseimage_path).classes('w-full h-96 object-contain')
+                                else:
+                                    editor.base_image_view = ui.label('No base image selected').classes('text-gray-500 text-center')
+                        
+                        ui.button('Close', on_click=editor.log_dialog.close).classes('mt-4')
+            else:
+                # Update image if baseimage path changed
+                if editor.baseimage_path and Path(editor.baseimage_path).exists():
+                    editor.base_image_view.set_source(editor.baseimage_path)
+
+            # Clear previous log content
+            editor.log_output.clear()
+            editor.log_dialog.open()
             
             # Clear previous log content
             editor.log_output.clear()
-            editor.log_window.open()
             
             # Run script with real-time output capture
             async def run_subprocess(prompt_file, mp4_file):
+                log_file = prompt_file.replace('.json', '.log')
+                if os.path.exists(log_file):
+                    os.remove(log_file)
 
-                # if Path(mp4_file).exists():
-                #     with ui.dialog() as video_dialog:
-                #         with ui.card().classes('w-full max-w-4xl'):
-                #             ui.label('Generated Video').classes('text-xl font-bold mb-4')
-                #             ui.video(str(mp4_file)).classes('w-full')
-                #             ui.button('Close', on_click=video_dialog.close).classes('mt-4')
-                #     video_dialog.open()
-            
+                response_dir = os.path.dirname(prompt_file)
+                # delete old image files
+                if not use_last_output:
+                    if os.path.exists(response_dir):
+                        for file in Path(response_dir).glob('test-*.png'):
+                            os.remove(file)
+
+                cmd = ['python', 'scriptgen.py', 
+                       prompt_file, 
+                       str(minlength), 
+                       str(maxlength), 
+                       str(transition),
+                       music_hints]
+                if use_last_output:
+                    response_file = prompt_file.replace('.json', '_response.json')
+                    cmd.append(f"--response_file={response_file}")
+                    
+                if not run_image_gen:
+                    cmd.append('--skip_image_gen')
+                if feedback_last_image:
+                    cmd.append('--feedback_image')
+                
                 process = await asyncio.create_subprocess_exec(
-                    'python', 'scriptgen.py', prompt_file,
+                    *cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE
                 )
@@ -148,15 +195,42 @@ class PromptEditor:
                         text = line.decode('utf-8').rstrip()
                         if text:
                             editor.log_output.push(text)
-                            #   editor.log_output.scroll_to_bottom()
-                            # editor.log_output.refresh()
+                            # Write to log file
+                            with open(log_file, 'a') as f:
+                                f.write(text + '\n')
+                
+                # Start file watcher for new PNG files
+                async def watch_for_images():
+                    seen_files = set()
+                    seen_files.add(editor.baseimage_path)
+                    seen_files.add(os.path.join(response_dir, 'test-0.png'))
+                    
+                    while process.returncode is None:
+                        try:
+                            if os.path.exists(response_dir):
+                                for file in Path(response_dir).glob('test-*.png'):
+                                    file_str = str(file)
+                                    if file_str not in seen_files:
+                                        seen_files.add(file_str)
+                                        # Update the base image view with the new file
+                                        if hasattr(editor, 'base_image_view'):
+                                            editor.base_image_view.set_source(file_str)
+                                            editor.log_output.push(f'Updated image view with: {file.name}')
+                        except Exception as e:
+                            editor.log_output.push(f'Error watching for images: {str(e)}')
+                        
+                        await asyncio.sleep(0.5)  # Check every 500ms
+                
+                # Start the file watcher task
+                if not use_last_output:
+                    watcher_task = asyncio.create_task(watch_for_images())
                 
                 # Wait for both stdout and stderr
                 await asyncio.gather(
                     read_stream(process.stdout),
-                    read_stream(process.stderr, True)
+                    read_stream(process.stderr, True),
                 )
-                
+
                 await process.wait()
                 
                 if process.returncode == 0:
@@ -165,7 +239,7 @@ class PromptEditor:
                     # Close the log window
                     editor.log_output.push('\n✓ Script completed successfully')
                     editor.log_output.push(f'\n📹 Generated video: {mp4_file}')
-                    editor.log_window.close()
+                    editor.log_dialog.close()
                     
                     # Open new dialog with video player
                     if Path(mp4_file).exists():
@@ -189,6 +263,15 @@ class PromptEditor:
             ui.notify(f"Error running script: {str(e)}", type="negative")
 
 editor = PromptEditor()
+
+async def pick_file() -> None:
+    result = await local_file_picker(editor.rootFolder, multiple=False, show_hidden_files=False)
+    if not result or not result[0]:
+        ui.notify("No file selected", type="warning")
+        return
+    ui.notify(f'You chose {result[0]}')
+    editor.load_file_input.set_value(result[0])
+    editor.load_from_json()
 
 with ui.card().classes("w-full max-w-4xl mx-auto p-6"):
     ui.label("Slideshow Prompt Editor").classes("text-2xl font-bold mb-4")
@@ -282,23 +365,90 @@ with ui.card().classes("w-full max-w-4xl mx-auto p-6"):
                 on_upload=handle_music_upload
             ).props('accept=".mp3"').classes("w-full")
     
+    # 
+    with ui.row().classes("w-full gap-4 mt-6"):
+        with ui.column().classes("flex-1"):
+            ui.label("Settings:").classes("font-semibold")
+            with ui.row().classes("gap-2"):
+                editor.min_length_input = ui.number(
+                    label="Min Length (seconds)",
+                    value=70,
+                    min=1,
+                    format='%.0f'
+                ).classes("w-32")
+                editor.max_length_input = ui.number(
+                    label="Max Length (seconds)", 
+                    value=160,
+                    min=1,
+                    format='%.0f'
+                ).classes("w-32")
+                editor.transition_input = ui.number(
+                    label="Transition Time (seconds)", 
+                    value=1.5,
+                    min=0.5,
+                    step=0.5,
+                    precision=1,
+                    format='%0.1f',
+                ).classes("w-32")
+                editor.feedback_enabled = ui.checkbox('Enable feedback previous image', value=True).classes("ml-2")
+                editor.hints_input = ui.textarea(
+                    label="Music Generation Hints",
+                    placeholder="Enter hints for music generation...",
+                    on_change=lambda e: setattr(editor, 'music_hints', e.value)
+                ).classes("w-full mt-2").props("rows=3")
+        
     # Buttons
     with ui.row().classes("w-full gap-4 mt-6"):
-        ui.button("Run", on_click=editor.run_script).props("color=primary")
+        # Feedback checkbox
+        ui.button("Run", on_click=lambda: editor.run_script(
+            use_last_output=False,
+            run_image_gen=True, 
+            minlength=editor.min_length_input.value,
+            maxlength=editor.max_length_input.value,
+            transition=editor.transition_input.value,
+            feedback_last_image=editor.feedback_enabled,
+            music_hints=editor.hints_input.value)
+        ).props("color=primary")
         
-        ui.button("Save", on_click=editor.save_to_json).props("color=secondary")
+        ui.button("Run (No Images)", on_click=lambda: editor.run_script(
+            use_last_output=False,
+            run_image_gen=False, 
+            minlength=editor.min_length_input.value,
+            maxlength=editor.max_length_input.value,
+            transition=editor.transition_input.value,
+            feedback_last_image=editor.feedback_enabled,
+            music_hints=editor.hints_input.value)
+        ).props("color=warning")
+        
+        ui.button("Rebuild Last Images", on_click=lambda: editor.run_script(
+            use_last_output=True,
+            run_image_gen=True, 
+            minlength=editor.min_length_input.value,
+            maxlength=editor.max_length_input.value,
+            transition=editor.transition_input.value,
+            feedback_last_image=editor.feedback_enabled,
+            music_hints=editor.hints_input.value)
+        ).props("color=secondary")
+
+        ui.button("Rebuild Last Video", on_click=lambda: editor.run_script(
+            use_last_output=True,
+            run_image_gen=False, 
+            minlength=editor.min_length_input.value,
+            maxlength=editor.max_length_input.value,
+            transition=editor.transition_input.value,
+            feedback_last_image=editor.feedback_enabled,
+            music_hints=editor.hints_input.value)
+        ).props("color=secondary")
         
         with ui.row().classes("gap-2"):
             editor.load_file_input = ui.input(
                 placeholder="Select JSON file to load..."
             ).props('readonly')
-            ui.upload(
-                on_upload=lambda e: (
-                    editor.load_file_input.set_value(e.name),
-                    editor.load_from_json()
-                ),
-                label='Load JSON'
-            ).props('accept=".json"').classes("w-32")
+            ui.button('Load Json File', on_click=lambda: pick_file(), icon='folder')
+            ui.button("Save", on_click=editor.save_to_json).props("color=secondary")
+
+# need buttons for min/max length of audio, crossfade time, hints for music gen
+# need a reprocess response, lets user select a response file and it reruns the imagegen or music selection/video gen
 
 ui.run(title="OpenAI Prompt Editor")
 

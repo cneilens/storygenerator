@@ -6,9 +6,10 @@ import requests
 from openai import OpenAI
 
 client = OpenAI()
-
-CACHE_FILE = 'incompetech_metadata.json'
-GENRE_CACHE_FILE = 'incompetech_genre.json'
+# Get the directory of the current script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CACHE_FILE = os.path.join(SCRIPT_DIR, 'incompetech_metadata.json')
+GENRE_CACHE_FILE = os.path.join(SCRIPT_DIR, 'incompetech_genre.json')
 CACHE_TTL = datetime.timedelta(days=1)
 METADATA_URL = 'https://incompetech.com/music/royalty-free/pieces.json'
 GENRE_URL = 'https://incompetech.com/music/royalty-free/genre.json'
@@ -61,22 +62,28 @@ def parse_duration(duration_str):
         return 0
     return h * 3600 + m * 60 + s
 
-def analyze_script(script, hints):
+def analyze_script(script, numslides, minlength, maxlength, hints):
     """
     Use OpenAI to recommend mood (feel), bpm, and genre based on script and hints.
     """
     prompt = f"""You are a music recommendation engine specialized in Incompetech music.
-Given the following script/storyboard and any additional hints, suggest a musical mood (feel), tempo in BPM (integer), and genre (style) that best matches.
+Given the following script/storyboard, number of slides, a min and max length of seconds,  and any additional hints, suggest a musical mood (feel), tempo in BPM (integer), and genre (style) that best matches.
 
 Script:
 {script}
+
+NumSlides:: {numslides}
+
+MinLength: {minlength}
+
+MaxLength: {maxlength}
 
 Hints:
 {hints or ''}
 
 Respond in JSON with keys 'mood', 'bpm', 'genre'."""
     response = client.responses.create(
-        model="gpt-4.1",
+        model="gpt-4.1-nano",
         input=prompt,
         temperature=0.7,
     )
@@ -133,21 +140,23 @@ def filter_tracks_by_length(tracks, min_len, max_len):
         filtered_tracks = sorted_tracks
     return filtered_tracks[:10]
     
-def find_best_genre(genres, genre):
+def find_best_genre(genres, genre, hints):
     """
     Use OpenAI to recommend search metadatabase for us.
     """
         
     prompt = f"""You are a music recommendation engine specialized in Incompetech music.
-Given the following json metadata, find the best macthing genre. 
-Return the matching genre name as a string.
+Given the following json metadata, find the best matching genre. 
+If hints are supplied use those to influence the genre selection.
+Only respond with the matching genre name as a string and no further details.
 metadata:
 {json.dumps(genres, indent=2)}   
 genre: {genre}
+hints: {hints or ''}
 """
     print("Finding a best genre...")
     response = client.responses.create(
-        model="gpt-4.1",
+        model="gpt-4.1-mini",
         input=prompt,
         temperature=0.7,
     )
@@ -166,6 +175,7 @@ def find_track(metadata, mood, bpm, min_len, max_len, hints=None):
 Given the following metadata database json file, search all the tracks in the database and recommend upto 5 tracks that best match the mood, bpm and any additional hints.
 Use the feel, description, and instruments fields of the metadata to determine the best matches.
 Bias on genre over bpm. 
+If hints are provided bias using the hints.
 You must keep all tracks less than 3 minutes in length while maintaing the best match.
 
 metadata:
@@ -183,7 +193,7 @@ Ensure its valid json without any extra text or formatting.
 """
     print("Finding a track for the script...")
     response = client.responses.create(
-        model="gpt-4.1",
+        model="gpt-4.1-mini",
         input=prompt,
         temperature=0.7,
     )
@@ -224,7 +234,7 @@ def download_mp3(track, output_dir='downloads'):
         print(f"File {local_path} already exists, skipping download.")
     return local_path
 
-def get_best_track_for_script(script, hints=None, min_length=None, max_length=None, refreshCache=False):
+def get_best_track_for_script(script, numslides=0, min_length=None, max_length=None, hints=None, refreshCache=False):
     metadata = download_metadata(force=refreshCache)
     genres = download_genres(force=refreshCache)
     # Convert genres from list to dict mapping index to genre name
@@ -236,12 +246,12 @@ def get_best_track_for_script(script, hints=None, min_length=None, max_length=No
         genre_name = genre_dict.get(genre_index)
         data["genre"] = genre_name
     
-    mood, bpm, genre = analyze_script(script, hints)
-    best_genre = find_best_genre(genres, genre)
+    mood, bpm, genre = analyze_script(script, numslides=numslides, minlength=min_length, maxlength=max_length, hints=hints)
+    best_genre = find_best_genre(genres, genre, hints)
     best_genre_tracks = [track for track in metadata if track.get('genre') == best_genre]
     
     print(f"Recommended mood: {mood}, bpm: {bpm}, genre: {genre}")
-    best_tracks = find_track(best_genre_tracks, mood, bpm   , min_length, max_length, hints)
+    best_tracks = find_track(best_genre_tracks, mood, bpm, min_length, max_length, hints)
     if best_tracks:
         tracks = best_tracks.get('tracks', [])
         if tracks:
@@ -250,7 +260,7 @@ def get_best_track_for_script(script, hints=None, min_length=None, max_length=No
             track = tracks[0]
             if track:
                 print(f"Recommended track: \n {json.dumps(track, indent=2)}\n")
-                path = download_mp3(track)
+                path = download_mp3(track, os.path.join(SCRIPT_DIR, 'downloads'))
                 if path:
                     print("Downloaded:", path)
                     return path
@@ -276,15 +286,16 @@ def main():
     # else:
     #     script = script_text or ''
     
-    jsonresponse = json.load(open("prompts_response.json", "r"))
+    jsonresponse = json.load(open("robotsecurity/prompts_response.json", "r"))
     
     script = jsonresponse.get("script")
     hints = ""
+    num_slides = 30
     min_length = 70
     max_length = 100
     refresh_cache = False
 
-    get_best_track_for_script(script, hints, min_length, max_length, refresh_cache)
+    get_best_track_for_script(script, numslides=num_slides, min_length=min_length, max_length= max_length, hints=hints, refreshCache=refresh_cache)
                         
 
 if __name__ == '__main__':
