@@ -16,7 +16,8 @@ def resize_images(image_paths):
         with Image.open(path) as img:
             img = img.convert("RGB")
             width, height = img.size
-            max_height = max(max_height, height)
+            if not path.endswith("-0.png"):
+                max_height = max(max_height, height)
             resized_images.append((path, width, height, img))
 
     # Determine final resized dimensions
