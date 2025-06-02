@@ -122,25 +122,25 @@ class PromptEditor:
         try:
             # Create dialog with log and image side-by-side
             if not hasattr(editor, 'log_dialog'):
-                with ui.dialog().classes('w-full max-w-6xl') as editor.log_dialog:
-                    with ui.card().classes('w-full max-w-6xl'):
+                with ui.dialog().classes('w-full') as editor.log_dialog:
+                    with ui.card().classes('w-full'):
                         ui.label('Script Output').classes('text-xl font-bold mb-4')
                         with ui.row().classes('w-full gap-4'):
                             # Log window on the left
-                            with ui.column().classes('flex-1'):
+                            with ui.column().classes('w-full'):
                                 ui.label('Log Output').classes('text-lg font-semibold mb-2')
                                 editor.log_output = ui.log(max_lines=1000).classes('w-full h-96')
                             
                             # Image view on the right
-                            with ui.column().classes('flex-1'):
-                                ui.label('Base Image').classes('text-lg font-semibold mb-2')
+                            with ui.column().classes('w-full'):
+                                ui.label('Image').classes('text-lg font-semibold mb-2')
                                 if editor.baseimage_path and Path(editor.baseimage_path).exists():
                                     editor.base_image_view = ui.image(editor.baseimage_path).classes('w-full h-96 object-contain')
                                 else:
                                     editor.base_image_view = ui.label('No base image selected').classes('text-gray-500 text-center')
                         
                         ui.button('Close', on_click=editor.log_dialog.close).classes('mt-4')
-            else:
+            else:   
                 # Update image if baseimage path changed
                 if editor.baseimage_path and Path(editor.baseimage_path).exists():
                     editor.base_image_view.set_source(editor.baseimage_path)
@@ -148,9 +148,6 @@ class PromptEditor:
             # Clear previous log content
             editor.log_output.clear()
             editor.log_dialog.open()
-            
-            # Clear previous log content
-            editor.log_output.clear()
             
             # Run script with real-time output capture
             async def run_subprocess(prompt_file, mp4_file):
@@ -240,6 +237,9 @@ class PromptEditor:
                     editor.log_output.push('\n✓ Script completed successfully')
                     editor.log_output.push(f'\n📹 Generated video: {mp4_file}')
                     editor.log_dialog.close()
+                    
+                    # Wait for 1 second
+                    await asyncio.sleep(1)
                     
                     # Open new dialog with video player
                     if Path(mp4_file).exists():
@@ -420,7 +420,7 @@ with ui.card().classes("w-full max-w-4xl mx-auto p-6"):
             music_hints=editor.hints_input.value)
         ).props("color=warning")
         
-        ui.button("Rebuild Last Images", on_click=lambda: editor.run_script(
+        ui.button("Rebuild Last Images and Video", on_click=lambda: editor.run_script(
             use_last_output=True,
             run_image_gen=True, 
             minlength=editor.min_length_input.value,
