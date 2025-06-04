@@ -4,6 +4,7 @@ from moviepy import AudioFileClip, CompositeAudioClip, ImageClip, concatenate_vi
 import os
 from PIL import Image, ImageFilter
 from musicanalyzer import analyze_audio
+from analyze_music_slideshow import analyze_music_transitions
 from transitions import *
 
 def resize_images(image_paths):
@@ -51,11 +52,11 @@ def resize_images(image_paths):
         # Save result
         final_img.save(path)
 
-def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_pattern="test-*.jpg,test-*.png", 
+def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_pattern="test-*.jpg,test-*.png",
                     music_enabled = True, music_file=None, crossfade_time=1):
     """
     Creates a slideshow video from images with crossfades between them.
-    
+
     Args:
         image_folder: Folder containing the images
         output_file: Name of the output MP4 file
@@ -64,21 +65,21 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
         music_file: music file to add to the video
         crossfade_time: Duration of crossfade between images (in seconds)
     """
-    
+
     if music_enabled and music_file is None:
         print("No music file provided!")
         return
-    
+
     # Get list of all image files matching the pattern
     patterns = image_pattern.split(",")
     image_files = []
     for pattern in patterns:
         image_files.extend(glob.glob(os.path.join(image_folder, pattern)))
-    
+
     if not image_files:
         print("No images found matching the pattern!")
         return
-    
+
     # Sort the images based on their index in the filename
     def extract_index(filename):
         base = os.path.basename(filename)
@@ -88,25 +89,29 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
             return int(index_str)
         except (IndexError, ValueError):
             return float('inf')  # Files without proper index go to the end
-    
+
     image_files.sort(key=extract_index)
-    
+
     resize_images(image_files)
     print(f"Music Enabled: {music_enabled}, Music file: {music_file}")
     if music_enabled:
-        slides = analyze_audio(music_file, len(image_files), crossfade_time)
+        # slides = analyze_audio(music_file, len(image_files), crossfade_time)
+        # transitions = slides.get("slides")
+        # if len(transitions) != len(image_files):
+        #     print(f"Warning: Number of transitions ({len(transitions)}) does not match number of images ({len(image_files)}).")
+
+        # slides_duration = sum([slide["duration"] + slide["transition"] for slide in transitions])
+        slides = analyze_music_transitions(music_file, len(image_files), crossfade_time, 3.0)
+        slides_duration = slides.get("total_duration", 0)
         transitions = slides.get("slides")
-        if len(transitions) != len(image_files):
-            print(f"Warning: Number of transitions ({len(transitions)}) does not match number of images ({len(image_files)}).")
-    
-        slides_duration = sum([slide["duration"] + slide["transition"] for slide in transitions])
+
     else:
         # If no music, use default transitions
         transitions = [{"duration": 2, "transition": crossfade_time} for _ in range(len(image_files) - 1)]
         transitions.append({"duration": 2, "transition": 3.0})  # Last slide has no transition
         slides_duration = sum([slide["duration"] + slide["transition"] for slide in transitions])
-        
-        
+
+
     # Create a clip for each image
     clips = []
     for index, img in enumerate(image_files):
@@ -116,7 +121,7 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
         else:
             clip = ImageClip(img).with_duration(slide["duration"])
         clips.append(clip)
-        
+
     clips_with_transitions = []
     for i in range(0, len(clips) - 1):
         # Add crossfade transition
@@ -130,29 +135,31 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
     clip = clips[-1]
     slide = transitions[-1]
     clips_with_transitions.append(clip.with_effects([vfx.FadeOut(slide["transition"])]))
-    
+
     clips_duration = sum([clip.duration for clip in clips_with_transitions])
-    print(f"Duration slides {slides_duration} clips {clips_duration}") 
-    total = 0
-    for clip in clips_with_transitions:
-        total += clip.duration
-        print (f"Clip duration: {clip.duration} running total: {total}")
-    total = 0
-    for slide in transitions:
-        total += slide["duration"]
-        total += slide["transition"]
-        combined = slide["duration"] + slide["transition"]
-        print (f"Slide duration: {slide['duration']} transition: {slide['transition']} combined: {combined} running total: {total}")
-            
+
+    print(f"Duration slides {slides_duration} clips {clips_duration}")
+    # total = 0
+    # for clip in clips_with_transitions:
+    #     total += clip.duration
+    #     print (f"Clip duration: {clip.duration} running total: {total}")
+
+    # total = 0
+    # for slide in transitions:
+    #     total += slide["duration"]
+    #     total += slide["transition"]
+    #     combined = slide["duration"] + slide["transition"]
+    #     print (f"Slide duration: {slide['duration']} transition: {slide['transition']} combined: {combined} running total: {total}")
+
     # Create the final video with crossfades
     final_clip = concatenate_videoclips(clips_with_transitions, method="chain", padding=0)
-    
+
     if music_enabled and music_file:
         audioclip = AudioFileClip(music_file)
         print(f"Audio duration: {audioclip.duration}, Video duration: {final_clip.duration}")
         new_audioclip = CompositeAudioClip([audioclip]).with_duration(final_clip.duration)
         final_clip = final_clip.with_audio(new_audioclip)
-        
+
     # Write the result to a file
     final_clip.write_videofile(output_file, fps=24, audio_codec='aac')
     print(f"Slideshow created successfully: {output_file}")
@@ -161,10 +168,10 @@ if __name__ == "__main__":
     # You can customize these parameters as needed
     # {image_folder}/vodevil-15550.mp3
     create_slideshow(
-        image_folder="./", 
+        image_folder="./",
         output_file="./letsrock-2.mp4",
         image_pattern="test-*.jpg,test-*.png",
         # music_file = "./music/cherry-stone-rock-205899.mp3",
         music_file = "./music/A1-Thunderstruck_01.mp3",
-        crossfade_time=1.5 
+        crossfade_time=1.5
     )

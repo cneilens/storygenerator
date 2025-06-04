@@ -1,8 +1,9 @@
 pillow
-librosa
+librosa>=0.10.0
 moviepy
-numpy
+numpy>=1.24.0
 nicegui
 openai
 requests
 scipy
+soundfile>=0.12.0
