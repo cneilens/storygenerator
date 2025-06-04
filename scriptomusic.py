@@ -67,12 +67,20 @@ def analyze_script(script, numslides, minlength, maxlength, hints):
     Use OpenAI to recommend mood (feel), bpm, and genre based on script and hints.
     """
     prompt = f"""You are a music recommendation engine specialized in Incompetech music.
-Given the following script/storyboard, number of slides, a min and max length of seconds,  and any additional hints, suggest a musical mood (feel), tempo in BPM (integer), and genre (style) that best matches.
 
-Script:
-{script}
+Given the text below, suggest a musical mood (feel), tempo in BPM (integer), and genre (style) that best matches the text.
+Use the following guidelines:
+1. Mood (feel) should be a descriptive word or phrase that captures the overall emotion or atmosphere of the text.
+2. BPM should be an integer representing the tempo of the music.
+3. Genre should be a specific style of music (e.g., "Classical", "Jazz", "Rock", etc.).
+4. The MinLength and MaxLength fields represent the minimum and maximum duration of the music in seconds.
+5. The NumSlides field represent how many slides have been created for the script.
+6. Use the MinLength, MaxLength and NumSlides fields along with the Text to help determine a suitable a BPM.
+7. If the Hints field is non empty, use it to influence the mood, bpm, and genre selection.
 
-NumSlides:: {numslides}
+Text: {script}
+
+NumSlides: {numslides}
 
 MinLength: {minlength}
 
@@ -81,7 +89,16 @@ MaxLength: {maxlength}
 Hints:
 {hints or ''}
 
-Respond in JSON with keys 'mood', 'bpm', 'genre'."""
+Respond in JSON format like this:
+```json
+{{
+    "mood": "Descriptive mood",
+    "bpm": 120,
+    "genre": "Genre name"
+    "reasoning": "Your reasoning for the selection"
+}}
+```
+"""
     response = client.responses.create(
         model="gpt-4.1-nano",
         input=prompt,
@@ -93,6 +110,7 @@ Respond in JSON with keys 'mood', 'bpm', 'genre'."""
     jsonresponse = jsonresponse.replace("\'", "'")
     
     try:
+        print("OpenAI response:", jsonresponse)
         rec = json.loads(jsonresponse)
         return rec.get('mood'), rec.get('bpm'), rec.get('genre')
     except Exception:
@@ -140,27 +158,46 @@ def filter_tracks_by_length(tracks, min_len, max_len):
         filtered_tracks = sorted_tracks
     return filtered_tracks[:10]
     
-def find_best_genre(genres, genre, hints):
+def find_best_genre(genre_names, genre, hints):
     """
     Use OpenAI to recommend search metadatabase for us.
     """
         
     prompt = f"""You are a music recommendation engine specialized in Incompetech music.
-Given the following json metadata, find the best matching genre. 
+Given the following comma seperated list of genre names, find the best matching genre for the given genre.
 If hints are supplied use those to influence the genre selection.
-Only respond with the matching genre name as a string and no further details.
-metadata:
-{json.dumps(genres, indent=2)}   
-genre: {genre}
-hints: {hints or ''}
+Respond in JSON in a format like this:
+```json
+{{
+    "genre": "Best matching genre name"
+    "reasoning": "Your reasoning for the selection"
+}}
+```
+genre names: 
+{genre_names}
+
+genre:
+{genre}
+
+hints: 
+{hints or ''}
+
 """
     print("Finding a best genre...")
     response = client.responses.create(
-        model="gpt-4.1-mini",
+        model="gpt-4.1",
         input=prompt,
         temperature=0.7,
     )
-    return response.output_text.strip().replace("'", "").replace('"', "")
+    print("OpenAI response:", response.output_text)
+    jsonresponse = response.output_text.removeprefix("```json\n")
+    jsonresponse = jsonresponse.removesuffix("\n```")
+    jsonresponse = jsonresponse.removesuffix("```")
+    jsonresponse = jsonresponse.replace("\'", "'")
+    rec = json.loads(jsonresponse)
+    
+    return rec["genre"]
+
 
     
 def find_track(metadata, mood, bpm, min_len, max_len, hints=None):
@@ -173,6 +210,7 @@ def find_track(metadata, mood, bpm, min_len, max_len, hints=None):
         
     prompt = f"""You are a music recommendation engine specialized in Incompetech music.
 Given the following metadata database json file, search all the tracks in the database and recommend upto 5 tracks that best match the mood, bpm and any additional hints.
+Use the description field of the metadata to help determine the feel or mood of each track.
 Use the feel, description, and instruments fields of the metadata to determine the best matches.
 Bias on genre over bpm. 
 If hints are provided bias using the hints.
@@ -188,15 +226,17 @@ bpm:
 Hints:
 {hints or ''}
 
+
 Purely respond as JSON with an array named 'tracks' which is the metadata to the best matching tracks and an object named 'reasoning' that describes your reasoning for selection.
 Ensure its valid json without any extra text or formatting.
 """
     print("Finding a track for the script...")
     response = client.responses.create(
-        model="gpt-4.1-mini",
+        model="gpt-4.1",
         input=prompt,
         temperature=0.7,
     )
+    print("OpenAI response:", response.output_text)
     
     jsonresponse = response.output_text.removeprefix("```json\n")
     jsonresponse = jsonresponse.removesuffix("\n```")
@@ -206,7 +246,6 @@ Ensure its valid json without any extra text or formatting.
     try:
         rec = json.loads(jsonresponse)
         print(rec.get('reasoning'))
-        # print(json.dumps(rec, indent=2))
         return rec
     except Exception as e:
         print(f"Warning: could not parse OpenAI response as JSON. {e}")
@@ -247,25 +286,36 @@ def get_best_track_for_script(script, numslides=0, min_length=None, max_length=N
         data["genre"] = genre_name
     
     mood, bpm, genre = analyze_script(script, numslides=numslides, minlength=min_length, maxlength=max_length, hints=hints)
-    best_genre = find_best_genre(genres, genre, hints)
-    best_genre_tracks = [track for track in metadata if track.get('genre') == best_genre]
+    genre_names = genre_dict.values()
+    print(f"Available genres: {', '.join(genre_names)}")
     
-    print(f"Recommended mood: {mood}, bpm: {bpm}, genre: {genre}")
-    best_tracks = find_track(best_genre_tracks, mood, bpm, min_length, max_length, hints)
-    if best_tracks:
-        tracks = best_tracks.get('tracks', [])
-        if tracks:
-            reasoning = best_tracks.get('reasoning')
-            print(f"Reasoning: \n {reasoning}\n")
-            track = tracks[0]
-            if track:
-                print(f"Recommended track: \n {json.dumps(track, indent=2)}\n")
-                path = download_mp3(track, os.path.join(SCRIPT_DIR, 'downloads'))
-                if path:
-                    print("Downloaded:", path)
-                    return path
-                else:
-                    print("Failed to download track.")
+    for retry_attempt in range(3):
+        best_genre = genre
+        if genre not in genre_names:
+            print(f"Genre '{genre}' not found in available genres. Finding closest match...")
+            best_genre = find_best_genre( {', '.join(genre_names)}, genre, hints)
+            print("Best genre found:", best_genre)
+            
+        best_genre_tracks = [track for track in metadata if track.get('genre') == best_genre]
+        
+        print(f"Recommended mood: {mood}, bpm: {bpm}, genre: {genre}")
+        best_tracks = find_track(best_genre_tracks, mood, bpm, min_length, max_length, hints)
+        if best_tracks:
+            tracks = best_tracks.get('tracks', [])
+            if tracks:
+                reasoning = best_tracks.get('reasoning')
+                print(f"Reasoning: \n {reasoning}\n")
+                track = tracks[0]
+                if track:
+                    print(f"Recommended track: \n {json.dumps(track, indent=2)}\n")
+                    path = download_mp3(track, os.path.join(SCRIPT_DIR, 'downloads'))
+                    if path:
+                        print("Downloaded:", path)
+                        return path
+                    else:
+                        print("Failed to download track.")
+        else:
+            print("No suitable tracks found, retrying...")
 
     print("No suitable tracks.")
     return None

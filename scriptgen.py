@@ -15,7 +15,7 @@ story_file = "rockstar_story.json"
 
 def fix_prompt(prompt):
     response = client.responses.create(
-        model="gpt-4.1-mini",
+        model="gpt-4.1",
         input="Please make a variation of the following prompt that would be less offensive and pass openAIs safety rules. \nIf the prompt says the person was overweight reword it into less offensive terms while keeping the meaning. \nReturn only the new prompt as a string. \n\nPrompt:" + prompt,
         temperature=0.7,
     )
@@ -56,6 +56,7 @@ def send_prompt(prompt, prevImage, baseImage, base_image_prompt, feedback_image,
        
 def process_responsefile(response_file,
                          story_file, 
+                         music_enabled=True,
                          min_length=70,
                          max_length=120,
                          crossfade_time=1.5,
@@ -82,6 +83,17 @@ def process_responsefile(response_file,
     script_folder = os.path.dirname(story_file)
     mp4_file, _ = os.path.splitext(story_file)
     mp4_file = os.path.join(script_folder,  mp4_file + ".mp4")
+    # Check if mp4_file exists and increment version if needed
+    if os.path.exists(mp4_file):
+        base_name, ext = os.path.splitext(mp4_file)
+        version = 0
+        while True:
+            versioned_file = f"{base_name}_{version:02d}{ext}"
+            if not os.path.exists(versioned_file):
+                mp4_file = versioned_file
+                break
+            version += 1
+
     
     with Image.open(baseImage) as img:
         img = img.convert("RGB")
@@ -124,13 +136,13 @@ def process_responsefile(response_file,
             with open(os.path.join(script_folder, "test-0.png"), "wb") as f:
                 f.write(image_bytes)
 
-    numslides = 0
-    for img_path in glob.glob("test-*.png", root_dir=script_folder):
-        numslides += 1
+    best_music = music
+    if music_enabled:
+        numslides = 0
+        for img_path in glob.glob("test-*.png", root_dir=script_folder):
+            numslides += 1
 
-    best_music = get_best_track_for_script(response.get("script"), numslides=numslides, min_length=min_length, max_length=max_length, hints=musichints, refreshCache=False)
-    if not best_music:
-        best_music = music
+        best_music = get_best_track_for_script(response.get("script"), numslides=numslides, min_length=min_length, max_length=max_length, hints=musichints, refreshCache=False)
     
     print(f"Using music: {best_music}")
     print(f"Script folder: {script_folder}")
@@ -139,12 +151,14 @@ def process_responsefile(response_file,
             image_folder = script_folder, 
             output_file = mp4_file,
             image_pattern = "test-*.png",
+            music_enabled = music_enabled,
             music_file = best_music,
             crossfade_time = crossfade_time
         )    
         
             
 def script_gen(story_file, 
+               music_enabled=True,
                min_length=70,
                max_length=120,
                crossfade_time=1.5,
@@ -186,6 +200,7 @@ def script_gen(story_file,
     process_responsefile(
         response_file, 
         story_file=story_file,
+        music_enabled=music_enabled,
         min_length=min_length,
         max_length=max_length,
         crossfade_time=crossfade_time,
@@ -205,8 +220,11 @@ if __name__ == "__main__":
     parser.add_argument('--response_file', type=str, help='Path to the response JSON file', default=None, required=False)
     parser.add_argument('--skip_image_gen', action='store_true', help='Skip image generation step', default=False)
     parser.add_argument('--feedback_image', action='store_true', help='Feedback previous image', default=False)
+    parser.add_argument('--music_enabled', action='store_true', help='Enable music in the video', default=False)
     
     args = parser.parse_args()
+    print("music_enabled:", args.music_enabled)
+    
     if args.response_file:
         response_file = args.response_file
         if not os.path.exists(response_file):
@@ -215,6 +233,7 @@ if __name__ == "__main__":
         process_responsefile(
             response_file, 
             story_file=args.story_file,
+            music_enabled=args.music_enabled,
             min_length=args.min_length,
             max_length=args.max_length,
             crossfade_time=args.crossfade_time,
@@ -224,6 +243,7 @@ if __name__ == "__main__":
         )
     else:    
         script_gen(args.story_file,
+                args.music_enabled,
                 args.min_length,
                 args.max_length,
                 args.crossfade_time,

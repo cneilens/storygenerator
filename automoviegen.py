@@ -52,7 +52,7 @@ def resize_images(image_paths):
         final_img.save(path)
 
 def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_pattern="test-*.jpg,test-*.png", 
-                    music_file=None, crossfade_time=1):
+                    music_enabled = True, music_file=None, crossfade_time=1):
     """
     Creates a slideshow video from images with crossfades between them.
     
@@ -60,11 +60,12 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
         image_folder: Folder containing the images
         output_file: Name of the output MP4 file
         image_pattern: Pattern to match image files (comma-separated patterns)
+        music_enabled: Whether to add background music
         music_file: music file to add to the video
         crossfade_time: Duration of crossfade between images (in seconds)
     """
     
-    if music_file is None:
+    if music_enabled and music_file is None:
         print("No music file provided!")
         return
     
@@ -91,13 +92,21 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
     image_files.sort(key=extract_index)
     
     resize_images(image_files)
+    print(f"Music Enabled: {music_enabled}, Music file: {music_file}")
+    if music_enabled:
+        slides = analyze_audio(music_file, len(image_files), crossfade_time)
+        transitions = slides.get("slides")
+        if len(transitions) != len(image_files):
+            print(f"Warning: Number of transitions ({len(transitions)}) does not match number of images ({len(image_files)}).")
     
-    slides = analyze_audio(music_file, len(image_files), crossfade_time)
-    transitions = slides.get("slides")
-    if len(transitions) != len(image_files):
-        print(f"Warning: Number of transitions ({len(transitions)}) does not match number of images ({len(image_files)}).")
-    
-    slides_duration = sum([slide["duration"] + slide["transition"] for slide in transitions])
+        slides_duration = sum([slide["duration"] + slide["transition"] for slide in transitions])
+    else:
+        # If no music, use default transitions
+        transitions = [{"duration": 2, "transition": crossfade_time} for _ in range(len(image_files) - 1)]
+        transitions.append({"duration": 2, "transition": 3.0})  # Last slide has no transition
+        slides_duration = sum([slide["duration"] + slide["transition"] for slide in transitions])
+        
+        
     # Create a clip for each image
     clips = []
     for index, img in enumerate(image_files):
@@ -137,12 +146,15 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
             
     # Create the final video with crossfades
     final_clip = concatenate_videoclips(clips_with_transitions, method="chain", padding=0)
-    if music_file:
+    
+    if music_enabled and music_file:
         audioclip = AudioFileClip(music_file)
-        new_audioclip = CompositeAudioClip([audioclip])
-        final_clip.audio = new_audioclip
+        print(f"Audio duration: {audioclip.duration}, Video duration: {final_clip.duration}")
+        new_audioclip = CompositeAudioClip([audioclip]).with_duration(final_clip.duration)
+        final_clip = final_clip.with_audio(new_audioclip)
+        
     # Write the result to a file
-    final_clip.write_videofile(output_file, fps=24)
+    final_clip.write_videofile(output_file, fps=24, audio_codec='aac')
     print(f"Slideshow created successfully: {output_file}")
 
 if __name__ == "__main__":
