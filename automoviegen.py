@@ -1,9 +1,7 @@
 import glob
-import json
 from moviepy import AudioFileClip, CompositeAudioClip, ImageClip, concatenate_videoclips, CompositeVideoClip, vfx
 import os
 from PIL import Image, ImageFilter
-from musicanalyzer import analyze_audio
 from analyze_music_slideshow import analyze_music_transitions
 from transitions import *
 
@@ -95,12 +93,6 @@ def create_slideshow(image_folder=".", output_file="slideshow.mp4", image_patter
     resize_images(image_files)
     print(f"Music Enabled: {music_enabled}, Music file: {music_file}")
     if music_enabled:
-        # slides = analyze_audio(music_file, len(image_files), crossfade_time)
-        # transitions = slides.get("slides")
-        # if len(transitions) != len(image_files):
-        #     print(f"Warning: Number of transitions ({len(transitions)}) does not match number of images ({len(image_files)}).")
-
-        # slides_duration = sum([slide["duration"] + slide["transition"] for slide in transitions])
         slides = analyze_music_transitions(music_file, len(image_files), crossfade_time, 3.0)
         slides_duration = slides.get("total_duration", 0)
         transitions = slides.get("slides")

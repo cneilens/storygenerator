@@ -7,7 +7,6 @@ from PIL import Image
 from automoviegen import create_slideshow
 from scriptomusic import get_best_track_for_script
 import glob
-import sys
 
 client = OpenAI()
 
@@ -71,10 +70,8 @@ def process_responsefile(response_file,
     prompt = story.get("prompt")
     base_image_prompt = story.get("base_image_prompt")
     baseImage = story.get("baseImage")
-    music = story.get("music")
 
     print(f"Base image: {baseImage}")
-    print(f"Music: {music}")
     print(f"Base prompt: {base_prompt}")
     print(f"Prompt: {prompt}")
     print(f"Base image prompt: {base_image_prompt}")
@@ -136,15 +133,14 @@ def process_responsefile(response_file,
             with open(os.path.join(script_folder, "test-0.png"), "wb") as f:
                 f.write(image_bytes)
 
-    best_music = music
+    best_music = None
     if music_enabled:
         numslides = 0
         for img_path in glob.glob("test-*.png", root_dir=script_folder):
             numslides += 1
-
         best_music = get_best_track_for_script(response.get("script"), numslides=numslides, min_length=min_length, max_length=max_length, hints=musichints, refreshCache=False)
+        print(f"Using music: {best_music}")
     
-    print(f"Using music: {best_music}")
     print(f"Script folder: {script_folder}")
     print(f"Output MP4 file: {mp4_file}")
     create_slideshow(
@@ -167,7 +163,6 @@ def script_gen(story_file,
                feedback_image=False):
     response_file, ext = os.path.splitext(story_file)
     response_file = response_file + "_response" + ext
-    script_folder = os.path.dirname(story_file)
 
     print(f"Story file: {story_file}")
     story = json.load(open(story_file, "r"))
@@ -176,9 +171,7 @@ def script_gen(story_file,
     prompt = story.get("prompt")
     base_image_prompt = story.get("base_image_prompt")
     baseImage = story.get("baseImage")
-    music = story.get("music")
     print(f"Base image: {baseImage}")
-    print(f"Music: {music}")
     print(f"Base prompt: {base_prompt}")
     print(f"Prompt: {prompt}")
     print(f"Base image prompt: {base_image_prompt}")
